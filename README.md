@@ -94,5 +94,5 @@ Estamos planeando las siguientes funcionalidades para futuras iteraciones:
 ---
 
 ### **Detalles del Equipo** - **Materia:** Desarrollo de Software
-- **Integrantes:** (Agregar nombres de los integrantes)
-- **Docente:** (Nombre del docente)
+- **Integrantes:** Cuenya Mateo, Falco Valentina, Lindon Sofia, Santillan Lucas, Pilar Yael
+- **Docente:** Watemberg Emilio, Giudici Paula
