@@ -2,8 +2,24 @@ import { useState } from 'react';
 import { Search, User, ShoppingBag, ChevronDown } from 'lucide-react';
 import '../styles/Header.css';
 
+interface ElectronicMusicGenres {
+  [key: string]: string[];
+}
+
+const electronicGenres: ElectronicMusicGenres = {
+  "Electrónico": [
+    "House",
+    "Progressive House",
+    "Techno",
+    "Organic House",
+    "Melodic Techno",
+    "Melodic House"
+  ]
+};
+
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isGenresOpen, setIsGenresOpen] = useState(false);
 
   return (
     <header className="header">
@@ -14,10 +30,30 @@ export default function Header() {
           </div>
 
           <nav className="navigation">
-            <button className="nav-button">
-              <span>Géneros</span>
-              <ChevronDown className="nav-icon" />
-            </button>
+            <div className="nav-item">
+              <button 
+                onClick={() => setIsGenresOpen(!isGenresOpen)} 
+                className="nav-button"
+              >
+                <span>Géneros</span>
+                <ChevronDown className={`nav-icon ${isGenresOpen ? "rotate" : ""}`} />
+              </button>
+
+              {isGenresOpen && (
+                <div className="submenu">
+                  {Object.entries(electronicGenres).map(([category, subgenres]) => (
+                    <div key={category} className="submenu-category">
+                      <h4>{category}</h4>
+                      <ul>
+                        {subgenres.map((genre) => (
+                          <li key={genre} className="submenu-item">{genre}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
           <div className="header-actions">
