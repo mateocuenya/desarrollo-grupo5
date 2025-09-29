@@ -1,0 +1,57 @@
+.releases-section {
+  margin-bottom: 32px;
+  margin-top: 0;
+}
+
+.section-subtitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 576px) {
+  .albums-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .albums-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .section-subtitle {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .albums-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .albums-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 575px) {
+  .section-subtitle {
+    font-size: 18px;
+  }
+  
+  .albums-grid {
+    gap: 12px;
+  }
+}

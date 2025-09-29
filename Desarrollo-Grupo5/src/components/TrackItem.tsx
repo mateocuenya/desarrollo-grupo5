@@ -1,3 +1,4 @@
+import { useState } from 'react'; 
 import { Play, Heart, MoreHorizontal } from 'lucide-react';
 import '../styles/TrackItem.css';
 
@@ -20,6 +21,11 @@ export default function TrackItem({
   isHovered,
   onHover
 }: TrackItemProps) {
+  const [isLiked, setIsLiked] = useState(false);
+  const handleLikeClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); 
+    setIsLiked(prev => !prev);
+  };
   return (
     <div
       className={`track-item ${isHovered ? 'hovered' : ''}`}
@@ -40,8 +46,15 @@ export default function TrackItem({
       </div>
 
       <div className="track-actions">
-        <button className="track-action-button">
-          <Heart className="track-action-icon" />
+        <button 
+          className={`track-action-button like-button ${isLiked ? 'liked' : ''}`}
+          onClick={handleLikeClick}
+        >
+          <Heart 
+            className="track-action-icon"
+            fill={isLiked ? '#ef4444' : 'none'} 
+            stroke={isLiked ? '#ef4444' : '#9ca3af'}
+          />
         </button>
         <button className="track-action-button">
           <MoreHorizontal className="track-action-icon" />

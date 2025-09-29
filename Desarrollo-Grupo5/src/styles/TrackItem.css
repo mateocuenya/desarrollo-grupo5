@@ -75,24 +75,40 @@
   padding: 4px;
   background: none;
   border: none;
-  color: #9ca3af;
+  color: #9ca3af; 
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease; 
   border-radius: 4px;
+  outline: none; 
+}
+
+.track-action-button:focus {
+  outline: none;
+  border: none; 
 }
 
 .track-action-button:hover {
-  color: #ffffff;
+  color: #ffffff; 
 }
 
 .track-action-button:first-child:hover {
-  color: #ef4444;
+  color: #ef4444; 
+}
+
+.track-action-button.like-button.liked {
+  color: #ef4444; 
+}
+
+.track-action-button.like-button.liked svg {
+  fill: #ef4444; 
+  stroke: #ef4444; 
 }
 
 .track-action-icon {
   width: 16px;
   height: 16px;
 }
+
 
 @media (min-width: 768px) {
   .track-title {
