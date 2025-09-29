@@ -95,6 +95,7 @@ const [currentIndex, setCurrentIndex] = useState(0);
 
   return (
     <section className="hero-section">
+      <h2 className="section-title">Novedades en Beat's</h2>
       <div className="carousel-container">
         <div className="carousel-track">
           {carouselImages.map((image, index) => (

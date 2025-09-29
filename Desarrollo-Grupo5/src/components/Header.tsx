@@ -21,7 +21,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isGenresOpen, setIsGenresOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'login' | 'register'| 'passw'>('login');
+  const [activeTab, setActiveTab] = useState<'login' | 'register' | 'passw'>('login');
 
   return (
     <header className="header">
@@ -29,34 +29,34 @@ export default function Header() {
         <div className="header-content">
           <div className="logo-section">
             <a href="../App"><h1 className="logo">Beat's</h1></a>
+
+            <nav className="navigation">
+              <div className="nav-item">
+                <button 
+                  onClick={() => setIsGenresOpen(!isGenresOpen)} 
+                  className="nav-button"
+                >
+                  <span>Géneros</span>
+                  <ChevronDown className={`nav-icon ${isGenresOpen ? "rotate" : ""}`} />
+                </button>
+
+                {isGenresOpen && (
+                  <div className="submenu">
+                    {Object.entries(electronicGenres).map(([category, subgenres]) => (
+                      <div key={category} className="submenu-category">
+                        <h4>{category}</h4>
+                        <ul>
+                          {subgenres.map((genre) => (
+                            <li key={genre} className="submenu-item">{genre}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </nav>
           </div>
-
-          <nav className="navigation">
-            <div className="nav-item">
-              <button 
-                onClick={() => setIsGenresOpen(!isGenresOpen)} 
-                className="nav-button"
-              >
-                <span>Géneros</span>
-                <ChevronDown className={`nav-icon ${isGenresOpen ? "rotate" : ""}`} />
-              </button>
-
-              {isGenresOpen && (
-                <div className="submenu">
-                  {Object.entries(electronicGenres).map(([category, subgenres]) => (
-                    <div key={category} className="submenu-category">
-                      <h4>{category}</h4>
-                      <ul>
-                        {subgenres.map((genre) => (
-                          <li key={genre} className="submenu-item">{genre}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </nav>
 
           <div className="header-actions">
             <div className="search-container">
@@ -100,9 +100,7 @@ export default function Header() {
                       <input type="email" placeholder="Email *" required />
                       <input type="password" placeholder="Contraseña *" required />
                       <button type="submit" className="form-btn">Ingresar</button>
-                      
-                      <button className="forgot-link"
-                      onClick={() => setActiveTab('passw')}>
+                      <button className="forgot-link" onClick={() => setActiveTab('passw')}>
                         ¿Olvidaste tu contraseña?
                       </button>
                     </form>
@@ -118,9 +116,10 @@ export default function Header() {
                   )}
 
                   {activeTab === 'passw' && (
-                  <p className='forgot-message'> Se envió un mail para cambiar tu contraseña al siguiente correo ******@gmail.com</p>
+                    <p className='forgot-message'>
+                      Se envió un mail para cambiar tu contraseña al siguiente correo ******@gmail.com
+                    </p>
                   )}
-
                 </div>
               )}
             </div>

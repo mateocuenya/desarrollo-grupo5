@@ -51,6 +51,7 @@ ul {
   display: flex;
   align-items: center;
   background: none;
+  margin-left: 40px;
   border: none;
   color: #d1d5db;
   cursor: pointer;
@@ -307,6 +308,25 @@ ul {
     width: 224px;
   }
 }
+
+
+@media (max-width: 767px) {
+  .navigation {
+    display: flex;           
+    align-items: center;
+    gap: 8px;                
+  }
+
+  .submenu {
+    position: absolute;     
+    top: 40px;              
+    left: 16px;             
+    right: 16px;
+    min-width: auto;
+    width: 100%;
+  }
+}
+
 
 @media (min-width: 992px) {
   .search-input {

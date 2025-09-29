@@ -1,0 +1,126 @@
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.track-item:hover,
+.track-item.hovered {
+  background-color: rgba(55, 65, 81, 0.5);
+}
+
+.track-number {
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.track-index {
+  color: #9ca3af;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.track-play-icon {
+  width: 16px;
+  height: 16px;
+  color: #10b981;
+}
+
+.track-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-title {
+  font-weight: 600;
+  color: #ffffff;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+  font-size: 14px;
+}
+
+.track-item:hover .track-title {
+  color: #10b981;
+}
+
+.track-artist {
+  color: #9ca3af;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.track-item:hover .track-actions {
+  opacity: 1;
+}
+
+.track-action-button {
+  padding: 4px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  border-radius: 4px;
+}
+
+.track-action-button:hover {
+  color: #ffffff;
+}
+
+.track-action-button:first-child:hover {
+  color: #ef4444;
+}
+
+.track-action-icon {
+  width: 16px;
+  height: 16px;
+}
+
+@media (min-width: 768px) {
+  .track-title {
+    font-size: 16px;
+  }
+  .track-artist {
+    font-size: 14px;
+  }
+  .track-index {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 575px) {
+  .track-item {
+    padding: 8px;
+    gap: 8px;
+  }
+  .track-number {
+    width: 20px;
+  }
+  .track-title {
+    font-size: 13px;
+  }
+  .track-artist {
+    font-size: 11px;
+  }
+  .track-index {
+    font-size: 13px;
+  }
+}
