@@ -20,6 +20,8 @@ const electronicGenres: ElectronicMusicGenres = {
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isGenresOpen, setIsGenresOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'login' | 'register'| 'passw'>('login');
 
   return (
     <header className="header">
@@ -67,9 +69,62 @@ export default function Header() {
               />
               <Search className="search-icon" />
             </div>
-            <button className="action-button">
-              <User className="action-icon" />
-            </button>
+
+            <div className="user-menu-container">
+              <button 
+                className="action-button" 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              >
+                <User className="action-icon" />
+              </button>
+
+              {isUserMenuOpen && (
+                <div className="user-menu">
+                  <div className="user-menu-tabs">
+                    <button 
+                      className={`user-tab ${activeTab === 'login' ? 'active' : 'passw'}`} 
+                      onClick={() => setActiveTab('login')}
+                    >
+                      Iniciar Sesión
+                    </button>
+                    <button 
+                      className={`user-tab ${activeTab === 'register' ? 'active' : 'passw'}`} 
+                      onClick={() => setActiveTab('register')}
+                    >
+                      Registrarse
+                    </button>
+                  </div>
+
+                  {activeTab === 'login' && (
+                    <form className="user-form">
+                      <input type="email" placeholder="Email *" required />
+                      <input type="password" placeholder="Contraseña *" required />
+                      <button type="submit" className="form-btn">Ingresar</button>
+                      
+                      <button className="forgot-link"
+                      onClick={() => setActiveTab('passw')}>
+                        ¿Olvidaste tu contraseña?
+                      </button>
+                    </form>
+                  )}
+
+                  {activeTab === 'register' && (
+                    <form className="user-form">
+                      <input type="text" placeholder="Nombre completo" required />
+                      <input type="email" placeholder="Email *" required />
+                      <input type="password" placeholder="Contraseña *" required />
+                      <button type="submit" className="form-btn">Registrarse</button>
+                    </form>
+                  )}
+
+                  {activeTab === 'passw' && (
+                  <p className='forgot-message'> Se envió un mail para cambiar tu contraseña al siguiente correo ******@gmail.com</p>
+                  )}
+
+                </div>
+              )}
+            </div>
+
             <button className="action-button">
               <ShoppingBag className="action-icon" />
             </button>
