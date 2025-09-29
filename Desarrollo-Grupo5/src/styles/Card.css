@@ -1,5 +1,5 @@
 .album-card {
-  cursor: pointer;
+  cursor: default; 
   transition: all 0.3s ease;
 }
 
@@ -13,6 +13,8 @@
   overflow: hidden;
   margin-bottom: 12px;
   aspect-ratio: 1;
+  transition: transform 0.3s ease;
+  cursor: pointer; 
 }
 
 .album-cover {
@@ -33,8 +35,18 @@
   transition: background-color 0.3s ease;
 }
 
-.album-card:hover .album-overlay {
-  background-color: rgba(0, 0, 0, 0.4);
+.album-card:hover .album-overlay,
+.album-cover-container.playing .album-overlay {
+  background-color: rgba(16, 185, 129, 0.4);
+}
+
+.album-cover-container.playing .album-overlay {
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from { box-shadow: 0 0 5px #10b981; }
+  to { box-shadow: 0 0 20px #10b981; }
 }
 
 .play-button-container {
@@ -44,11 +56,13 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .play-button-container.visible {
   opacity: 1;
+  transform: scale(1);
 }
 
 .play-button {
@@ -59,12 +73,17 @@
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
-  transform: scale(1);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .play-button:hover {
   background-color: #059669;
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .play-icon {
@@ -88,9 +107,65 @@
   color: #10b981;
 }
 
+.album-details-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .album-artist {
   color: #9ca3af;
   font-size: 12px;
+  margin: 0;
+}
+
+.album-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.album-price {
+    color: #10b981;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0;
+}
+
+.add-to-list-button {
+    background: transparent;
+    border: 1px solid #10b981;
+    color: #10b981;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.add-to-list-button:hover {
+    background-color: #10b981;
+    color: #000000;
+}
+
+.add-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.hidden-audio-player {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  margin: -1px;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  padding: 0;
 }
 
 @media (min-width: 768px) {

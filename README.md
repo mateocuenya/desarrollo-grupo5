@@ -46,7 +46,7 @@ A continuación se detallan las tecnologías elegidas para el desarrollo del pro
 | Categoría | Tecnologías Propuestas |
 | :--- | :--- |
 | **Frontend** | React / TypeScript , HTML5, CSS3 |
-| **Backend** |  |
+| **Backend** | Python Flask |
 | **Base de datos** | PostgreSQL |
 | **Pagos** | Mercado Pago |
 | **Despliegue** | Cloudflare |
