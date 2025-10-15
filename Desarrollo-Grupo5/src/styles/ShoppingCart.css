@@ -1,0 +1,333 @@
+.cart-container {
+  min-height: 100vh;
+  background-color: #242424;
+  color: #ffffff;
+  padding: 32px;
+}
+
+.cart-header {
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+
+.cart-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 40px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.cart-icon {
+  width: 40px;
+  height: 40px;
+  color: #10b981;
+}
+
+.cart-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.cart-table-container {
+  background-color: rgba(55, 65, 81, 0.3);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background-color: #181717;
+}
+
+.table-header th {
+  padding: 16px 12px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #242424;
+}
+
+.col-cover { width: 60px; }
+.col-title { width: 15%; }
+.col-artist { width: 12%; }
+.col-discography { width: 12%; }
+.col-genre { width: 12%; }
+.col-bpm { width: 8%; }
+.col-release { width: 10%; }
+.col-format { width: 8%; }
+.col-price { width: 8%; }
+.col-actions { width: 60px; }
+
+.cart-item {
+  border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+  transition: background-color 0.2s ease;
+}
+
+.cart-item:hover {
+  background-color: rgba(55, 65, 81, 0.3);
+}
+
+.cart-item td {
+  padding: 16px 12px;
+  vertical-align: middle;
+}
+
+.item-cover {
+  padding: 12px;
+}
+
+.cover-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.item-title {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.item-artist,
+.item-discography,
+.item-genre,
+.item-bpm,
+.item-release,
+.item-format {
+  color: #d1d5db;
+  font-size: 14px;
+}
+
+.item-price {
+  font-weight: 600;
+  color: #10b981;
+  font-size: 14px;
+}
+
+.item-actions {
+  text-align: center;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.remove-button:hover {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.remove-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.cart-summary {
+  align-self: flex-end;
+  background-color: rgba(55, 65, 81, 0.5);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 32px;
+  min-width: 300px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.summary-row:last-of-type {
+  margin-bottom: 32px;
+}
+
+.summary-label {
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+.summary-value {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.total-row {
+  border-top: 1px solid #374151;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.total-row .summary-label,
+.total-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.total-value {
+  color: #10b981;
+}
+
+.checkout-button {
+  width: 100%;
+  background-color: #10b981;
+  color: #ffffff;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.checkout-button:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+}
+
+@media (max-width: 1024px) {
+  .cart-container {
+    padding: 24px;
+  }
+
+  .cart-title {
+    font-size: 32px;
+  }
+
+  .cart-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .cart-table-container {
+    overflow-x: auto;
+  }
+
+  .cart-table {
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cart-container {
+    padding: 16px;
+  }
+
+  .cart-title {
+    font-size: 28px;
+  }
+
+  .cart-content {
+    gap: 24px;
+  }
+
+  .cart-summary {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .table-header th {
+    padding: 12px 8px;
+    font-size: 11px;
+  }
+
+  .cart-item td {
+    padding: 12px 8px;
+  }
+
+  .cover-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .item-title,
+  .item-artist,
+  .item-discography,
+  .item-genre,
+  .item-bpm,
+  .item-release,
+  .item-format,
+  .item-price {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-title {
+    font-size: 24px;
+    gap: 12px;
+  }
+
+  .cart-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .cart-summary {
+    padding: 24px;
+  }
+
+  .summary-label,
+  .summary-value {
+    font-size: 14px;
+  }
+
+  .total-row .summary-label,
+  .total-value {
+    font-size: 18px;
+  }
+
+  .checkout-button {
+    font-size: 16px;
+    padding: 14px 24px;
+  }
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 64px 32px;
+  color: #9ca3af;
+}
+
+.empty-cart-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  opacity: 0.5;
+}
+
+.empty-cart-message {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.empty-cart-subtitle {
+  font-size: 16px;
+  opacity: 0.7;
+}

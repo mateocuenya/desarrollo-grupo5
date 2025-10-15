@@ -1,6 +1,13 @@
 import { useState } from 'react';
-import { Search, User, ShoppingBag, ChevronDown } from 'lucide-react';
+import { Search, User, ShoppingCart, ChevronDown } from 'lucide-react';
 import '../styles/Header.css';
+
+interface HeaderProps {
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  currentView: 'home' | 'cart';
+  onViewChange: (view: 'home' | 'cart') => void;
+}
 
 interface ElectronicMusicGenres {
   [key: string]: string[];
@@ -17,8 +24,12 @@ const electronicGenres: ElectronicMusicGenres = {
   ]
 };
 
-export default function Header() {
-  const [searchQuery, setSearchQuery] = useState('');
+export default function Header({
+  searchQuery,
+  onSearchChange,
+  currentView,
+  onViewChange
+}: HeaderProps) {
   const [isGenresOpen, setIsGenresOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'login' | 'register' | 'passw'>('login');
@@ -28,7 +39,7 @@ export default function Header() {
       <div className="header-container">
         <div className="header-content">
           <div className="logo-section">
-            <a href="../App"><h1 className="logo">Beat's</h1></a>
+            <h1 className="logo" onClick={() => onViewChange('home')}>Beat's</h1>
 
             <nav className="navigation">
               <div className="nav-item">
@@ -64,7 +75,7 @@ export default function Header() {
                 type="text"
                 placeholder="Buscar tracks, artistas, etc"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => onSearchChange(e.target.value)}
                 className="search-input"
               />
               <Search className="search-icon" />
@@ -82,13 +93,13 @@ export default function Header() {
                 <div className="user-menu">
                   <div className="user-menu-tabs">
                     <button 
-                      className={`user-tab ${activeTab === 'login' ? 'active' : 'passw'}`} 
+                      className={`user-tab ${activeTab === 'login' ? 'active' : ''}`} 
                       onClick={() => setActiveTab('login')}
                     >
                       Iniciar Sesión
                     </button>
                     <button 
-                      className={`user-tab ${activeTab === 'register' ? 'active' : 'passw'}`} 
+                      className={`user-tab ${activeTab === 'register' ? 'active' : ''}`} 
                       onClick={() => setActiveTab('register')}
                     >
                       Registrarse
@@ -100,7 +111,11 @@ export default function Header() {
                       <input type="email" placeholder="Email *" required />
                       <input type="password" placeholder="Contraseña *" required />
                       <button type="submit" className="form-btn">Ingresar</button>
-                      <button className="forgot-link" onClick={() => setActiveTab('passw')}>
+                      <button
+                        type="button"
+                        className="forgot-link"
+                        onClick={() => setActiveTab('passw')}
+                      >
                         ¿Olvidaste tu contraseña?
                       </button>
                     </form>
@@ -124,8 +139,12 @@ export default function Header() {
               )}
             </div>
 
-            <button className="action-button">
-              <ShoppingBag className="action-icon" />
+            <button
+              className={`action-button ${currentView === 'cart' ? 'active' : ''}`}
+              onClick={() => onViewChange('cart')}
+            >
+              <ShoppingCart className="action-icon" />
+              <span className="cart-badge"></span>
             </button>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, Plus } from 'lucide-react'; // Importamos Plus
+import { Play, Pause, Plus } from 'lucide-react'; 
 import '../styles/Card.css';
 
 interface Album {
@@ -8,7 +8,7 @@ interface Album {
   artist: string;
   cover: string;
   audio: string;
-  price: number; // Nuevo: Precio
+  price: number;
 }
 
 interface AlbumCardProps {
@@ -18,7 +18,7 @@ interface AlbumCardProps {
   isPlaying: boolean;
   onPlay: (id: number) => void;
   onStop: () => void;
-  onAddToList: () => void; // Nuevo: Función para añadir a la lista
+  onAddToList: () => void; 
 }
 
 const Card: React.FC<AlbumCardProps> = ({
