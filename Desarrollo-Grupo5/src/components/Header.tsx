@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, User, ShoppingCart, ChevronDown } from 'lucide-react';
 import '../styles/Header.css';
+import { useShoppingCart } from '../context/ShoppingCartContext';
 
 interface HeaderProps {
   searchQuery: string;
@@ -33,6 +34,7 @@ export default function Header({
   const [isGenresOpen, setIsGenresOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'login' | 'register' | 'passw'>('login');
+  const { cartItemCount } = useShoppingCart();
 
   return (
     <header className="header">
@@ -144,7 +146,7 @@ export default function Header({
               onClick={() => onViewChange('cart')}
             >
               <ShoppingCart className="action-icon" />
-              <span className="cart-badge"></span>
+              {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
             </button>
           </div>
         </div>

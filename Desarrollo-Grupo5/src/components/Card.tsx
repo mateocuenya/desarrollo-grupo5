@@ -1,5 +1,6 @@
 import React from 'react';
-import { Play, Pause, Plus } from 'lucide-react'; 
+import { Play, Pause, Plus, Check } from 'lucide-react'; 
+import { useShoppingCart } from '../context/ShoppingCartContext';
 import '../styles/Card.css';
 
 interface Album {
@@ -18,7 +19,6 @@ interface AlbumCardProps {
   isPlaying: boolean;
   onPlay: (id: number) => void;
   onStop: () => void;
-  onAddToList: () => void; 
 }
 
 const Card: React.FC<AlbumCardProps> = ({
@@ -27,10 +27,21 @@ const Card: React.FC<AlbumCardProps> = ({
   onHover,
   isPlaying,
   onPlay,
-  onStop,
-  onAddToList
+  onStop
 }) => {
+  const { cart, addToCart, removeFromCart } = useShoppingCart();
+
+  const isInCart = cart.some(item => item.id === album.id);
   const isButtonVisible = isPlaying || isHovered;
+
+  const handleToggleCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isInCart) {
+      removeFromCart(album.id);
+    } else {
+      addToCart(album);
+    }
+  };
 
   return (
     <div
@@ -41,8 +52,8 @@ const Card: React.FC<AlbumCardProps> = ({
       <div 
         className={`album-cover-container ${isPlaying ? 'playing' : ''}`}
         onClick={(e) => { 
-            e.stopPropagation();
-            isPlaying ? onStop() : onPlay(album.id);
+          e.stopPropagation();
+          isPlaying ? onStop() : onPlay(album.id);
         }}
       >
         <img src={album.cover} alt={album.title} className="album-cover" />
@@ -66,20 +77,17 @@ const Card: React.FC<AlbumCardProps> = ({
         <h4 className="album-title">{album.title}</h4>
         
         <div className="album-details-row">
-            <p className="album-artist">{album.artist}</p>
-            <div className="album-actions">
-                <p className="album-price">${album.price.toFixed(2)}</p>
-                <button 
-                    aria-label="Añadir a la lista"
-                    className="add-to-list-button"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onAddToList();
-                    }}
-                >
-                    <Plus className="add-icon" />
-                </button>
-            </div>
+          <p className="album-artist">{album.artist}</p>
+          <div className="album-actions">
+            <p className="album-price">${album.price.toFixed(2)}</p>
+            <button 
+              aria-label={isInCart ? "Quitar del carrito" : "Añadir al carrito"}
+              className={`add-to-list-button ${isInCart ? 'added' : ''}`}
+              onClick={handleToggleCart}
+            >
+              {isInCart ? <Check className="add-icon added" /> : <Plus className="add-icon" />}
+            </button>
+          </div>
         </div>
       </div>
     </div>

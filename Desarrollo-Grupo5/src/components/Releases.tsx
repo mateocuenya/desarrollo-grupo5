@@ -3,6 +3,7 @@ import Cards from './Card';
 import '../styles/Releases.css';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import { useShoppingCart } from '../context/ShoppingCartContext';
 
 interface Album {
   id: number;
@@ -51,6 +52,7 @@ const featuredAlbums: Album[] = [
 export default function Releases() {
   const [hoveredAlbum, setHoveredAlbum] = useState<number | null>(null);
   const [playingAlbumId, setPlayingAlbumId] = useState<number | null>(null);
+  const { addToCart } = useShoppingCart();
 
   const currentAudioSrc = useMemo(() => {
     if (!playingAlbumId) return '';
@@ -68,9 +70,9 @@ export default function Releases() {
     }
   };
 
-  const handleAddToList = (title: string) => {
-      console.log(`Canción "${title}" añadida a la lista.`);
-      alert(`"${title}" añadida a tu lista.`);
+  const handleAddToList = (album: Album) => {
+      addToCart(album);
+      alert(`"${album.title}" añadida a tu lista.`);
   };
 
   return (
@@ -86,7 +88,7 @@ export default function Releases() {
             isPlaying={playingAlbumId === album.id}
             onPlay={handlePlay} 
             onStop={handleStop}
-            onAddToList={() => handleAddToList(album.title)}
+            onAddToList={() => handleAddToList(album)}
           />
         ))}
       </div>

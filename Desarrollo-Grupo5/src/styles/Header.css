@@ -1,5 +1,5 @@
 ul {
-   list-style-type: none; 
+  list-style-type: none; 
 }
 
 .header { 
@@ -135,6 +135,7 @@ ul {
   display: flex;      
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .action-button:hover {
@@ -267,6 +268,25 @@ ul {
   font-size: 0.9rem;
   color: rgb(169, 21, 21);
   text-align: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #10b981; 
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1f2937; 
+  z-index: 10;
+  margin-top: 5px;
 }
 
 

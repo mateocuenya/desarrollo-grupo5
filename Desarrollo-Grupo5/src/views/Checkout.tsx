@@ -1,65 +1,38 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Trash2 } from 'lucide-react';
+import { useShoppingCart } from '../context/ShoppingCartContext';
 import '../styles/Checkout.css';
-
-interface CheckoutItem {
-  id: number;
-  title: string;
-  artist: string;
-  price: number;
-  cover: string;
-}
 
 interface CheckoutProps {
   onBackToCart: () => void;
 }
 
-const checkoutItems: CheckoutItem[] = [
-  {
-    id: 1,
-    title: 'Sweet Nothing',
-    artist: 'Calvin Harris',
-    price: 2.50,
-    cover: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=100'
-  },
-  {
-    id: 2,
-    title: 'Early Morning',
-    artist: 'Guy J',
-    price: 3.60,
-    cover: 'https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=100'
-  }
-];
-
 const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
-  const [items, setItems] = useState<CheckoutItem[]>(checkoutItems);
-  const [formData, setFormData] = useState({
-    cardNumber: '5555 6789 7890 1234',
-    cvv: '123',
-    dni: '44555666',
-    month: 'Enero',
-    year: '2025',
-    cardType: 'Visa',
-    firstName: 'Valentina',
-    lastName: 'Falco',
-    billingFirstName: 'Valentina',
-    billingLastName: 'Falco',
-    billingDni: '44555666',
-    country: 'Argentina',
-    province: 'Buenos Aires',
-    street: '122 bis',
-    number: '1834',
-    postalCode: '1923',
-    city: 'Berisso'
-  });
+  const { cart, removeFromCart } = useShoppingCart();
 
-  const removeItem = (id: number) => {
-    setItems(items.filter(item => item.id !== id));
-  };
-
-  const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const tax = subtotal * 0.123;
   const total = subtotal + tax;
+
+const [formData, setFormData] = useState({
+    cardNumber: '',
+    cvv: '',
+    dni: '',
+    month: '',
+    year: '',
+    cardType: '',
+    firstName: '',
+    lastName: '',
+    billingFirstName: '',
+    billingLastName: '',
+    billingDni: '',
+    country: '',
+    province: '',
+    street: '',
+    number: '',
+    postalCode: '',
+    city: ''
+  });
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -76,7 +49,6 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
 
       <div className="checkout-content">
         <div className="checkout-form">
-          {/* Payment Information */}
           <div className="form-section">
             <div className="form-row">
               <div className="form-group full-width">
@@ -119,20 +91,13 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
                   onChange={(e) => handleInputChange('month', e.target.value)}
                   className="form-select"
                 >
-                  <option>Enero</option>
-                  <option>Febrero</option>
-                  <option>Marzo</option>
-                  <option>Abril</option>
-                  <option>Mayo</option>
-                  <option>Junio</option>
-                  <option>Julio</option>
-                  <option>Agosto</option>
-                  <option>Septiembre</option>
-                  <option>Octubre</option>
-                  <option>Noviembre</option>
-                  <option>Diciembre</option>
+                  <option>Enero</option><option>Febrero</option><option>Marzo</option>
+                  <option>Abril</option><option>Mayo</option><option>Junio</option>
+                  <option>Julio</option><option>Agosto</option><option>Septiembre</option>
+                  <option>Octubre</option><option>Noviembre</option><option>Diciembre</option>
                 </select>
               </div>
+
               <div className="form-group">
                 <label>Año</label>
                 <select
@@ -140,14 +105,11 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
                   onChange={(e) => handleInputChange('year', e.target.value)}
                   className="form-select"
                 >
-                  <option>2024</option>
-                  <option>2025</option>
-                  <option>2026</option>
-                  <option>2027</option>
-                  <option>2028</option>
-                  <option>2029</option>
+                  <option>2024</option><option>2025</option><option>2026</option>
+                  <option>2027</option><option>2028</option><option>2029</option>
                 </select>
               </div>
+
               <div className="form-group">
                 <label>Tarjeta</label>
                 <select
@@ -155,9 +117,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
                   onChange={(e) => handleInputChange('cardType', e.target.value)}
                   className="form-select"
                 >
-                  <option>Visa</option>
-                  <option>Mastercard</option>
-                  <option>American Express</option>
+                  <option>Visa</option><option>Mastercard</option><option>American Express</option>
                 </select>
               </div>
             </div>
@@ -184,7 +144,6 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
             </div>
           </div>
 
-          {/* Billing Information */}
           <div className="form-section">
             <h3 className="section-title">Información de facturación</h3>
             
@@ -226,13 +185,11 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
                   onChange={(e) => handleInputChange('country', e.target.value)}
                   className="form-select"
                 >
-                  <option>Argentina</option>
-                  <option>Brasil</option>
-                  <option>Chile</option>
-                  <option>Uruguay</option>
-                  <option>Paraguay</option>
+                  <option>Argentina</option><option>Brasil</option><option>Chile</option>
+                  <option>Uruguay</option><option>Paraguay</option>
                 </select>
               </div>
+
               <div className="form-group">
                 <label>Provincia</label>
                 <select
@@ -240,11 +197,8 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
                   onChange={(e) => handleInputChange('province', e.target.value)}
                   className="form-select"
                 >
-                  <option>Buenos Aires</option>
-                  <option>Córdoba</option>
-                  <option>Santa Fe</option>
-                  <option>Mendoza</option>
-                  <option>Tucumán</option>
+                  <option>Buenos Aires</option><option>Córdoba</option>
+                  <option>Santa Fe</option><option>Mendoza</option><option>Tucumán</option>
                 </select>
               </div>
             </div>
@@ -290,17 +244,16 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
           </div>
         </div>
 
-        {/* Order Summary */}
         <div className="order-summary">
           <h3 className="summary-title">TU PEDIDO</h3>
-          
+
           <div className="order-items">
             <div className="items-header">
               <span className="header-track">TRACK</span>
               <span className="header-subtotal">SUBTOTAL</span>
             </div>
-            
-            {items.map((item) => (
+
+            {cart.map((item) => (
               <div key={item.id} className="order-item">
                 <div className="item-info">
                   <img src={item.cover} alt={item.title} className="item-cover" />
@@ -313,7 +266,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
                   <span className="item-price">${item.price.toFixed(2)}</span>
                   <button 
                     className="remove-item-btn"
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeFromCart(item.id)}
                   >
                     <Trash2 className="remove-icon" />
                   </button>
@@ -337,9 +290,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
             </div>
           </div>
 
-          <button className="pay-button">
-            Pagar
-          </button>
+          <button className="pay-button">Pagar</button>
         </div>
       </div>
     </div>
