@@ -11,6 +11,10 @@ function App() {
   const [currentView, setCurrentView] = useState<'home' | 'cart' | 'checkout'>('home');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const handleBackToHome = () => {
+    setCurrentView('home');
+  };
+  
   return (
     <div className="app">
       <Header
@@ -32,8 +36,11 @@ function App() {
         </div>
       )}
       
-      {currentView === 'cart' && (
-        <ShoppingCart onProceedToCheckout={() => setCurrentView('checkout')} />
+   {currentView === 'cart' && (
+        <ShoppingCart 
+          onProceedToCheckout={() => setCurrentView('checkout')}
+          onBackToHome={handleBackToHome}
+        />
       )}
       
       {currentView === 'checkout' && (

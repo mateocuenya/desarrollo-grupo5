@@ -17,6 +17,7 @@ interface CartItem {
 
 interface CartProps {
   onProceedToCheckout: () => void;
+  onBackToHome: () => void;
 }
 
 const cartItems: CartItem[] = [
@@ -46,7 +47,7 @@ const cartItems: CartItem[] = [
   }
 ];
 
-const Cart: React.FC<CartProps> = ({ onProceedToCheckout }) => {
+const Cart: React.FC<CartProps> = ({ onProceedToCheckout, onBackToHome }) => {
   const [items, setItems] = useState<CartItem[]>(cartItems);
 
   const removeItem = (id: number) => {
@@ -54,8 +55,29 @@ const Cart: React.FC<CartProps> = ({ onProceedToCheckout }) => {
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.price, 0);
-  const tax = subtotal * 0.123; // 12.3% tax rate
+  const tax = subtotal * 0.123; 
   const total = subtotal + tax;
+
+
+  if (items.length === 0) {
+    return (
+      <div className="cart-container">
+        <div className="cart-header">
+          <h1 className="cart-title">
+            <ShoppingCart className="cart-icon" />
+            Carrito
+          </h1>
+        </div>
+        
+        <div className="empty-cart">
+          <p className="empty-cart-message">Tu carrito está vacío. ¡Comenzá a comprar!</p>
+          <button className="back-to-home-button" onClick={onBackToHome}>
+            Volver a la Página principal
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="cart-container">
