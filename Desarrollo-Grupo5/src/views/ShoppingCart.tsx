@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Trash2, ShoppingCart } from 'lucide-react';
 import '../styles/ShoppingCart.css';
 
@@ -13,6 +13,10 @@ interface CartItem {
   format: string;
   price: number;
   cover: string;
+}
+
+interface CartProps {
+  onProceedToCheckout: () => void;
 }
 
 const cartItems: CartItem[] = [
@@ -42,15 +46,15 @@ const cartItems: CartItem[] = [
   }
 ];
 
-export default function Cart(){
-const [items, setItems] = useState<CartItem[]>(cartItems);
+const Cart: React.FC<CartProps> = ({ onProceedToCheckout }) => {
+  const [items, setItems] = useState<CartItem[]>(cartItems);
 
   const removeItem = (id: number) => {
     setItems(items.filter(item => item.id !== id));
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.price, 0);
-  const tax = subtotal * 0.123; 
+  const tax = subtotal * 0.123; // 12.3% tax rate
   const total = subtotal + tax;
 
   return (
@@ -120,12 +124,13 @@ const [items, setItems] = useState<CartItem[]>(cartItems);
             <span className="summary-label">Total:</span>
             <span className="summary-value total-value">${total.toFixed(2)}</span>
           </div>
-          <button className="checkout-button">
-            Pago
+          <button className="checkout-button" onClick={onProceedToCheckout}>
+            Proceder al Pago
           </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
+export default Cart;

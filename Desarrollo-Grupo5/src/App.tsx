@@ -4,10 +4,11 @@ import HeroSection from './components/HeroSection';
 import TopTen from './components/TopTen';
 import Releases from './components/Releases';
 import ShoppingCart from './views/ShoppingCart';
+import Checkout from "./views/Checkout";
 import './App.css';
 
 function App() {
- const [currentView, setCurrentView] = useState<'home' | 'cart'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'cart' | 'checkout'>('home');
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -19,7 +20,7 @@ function App() {
         onViewChange={setCurrentView}
       />
 
-      {currentView === 'home' ? (
+      {currentView === 'home' && (
         <div className="main-container">
           <div className="content-grid">
             <div className="main-content">
@@ -29,8 +30,14 @@ function App() {
             <TopTen />
           </div>
         </div>
-      ) : (
-        <ShoppingCart />
+      )}
+      
+      {currentView === 'cart' && (
+        <ShoppingCart onProceedToCheckout={() => setCurrentView('checkout')} />
+      )}
+      
+      {currentView === 'checkout' && (
+        <Checkout onBackToCart={() => setCurrentView('cart')} />
       )}
     </div>
   );

@@ -5,8 +5,8 @@ import '../styles/Header.css';
 interface HeaderProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
-  currentView: 'home' | 'cart';
-  onViewChange: (view: 'home' | 'cart') => void;
+  currentView: 'home' | 'cart' | 'checkout';
+  onViewChange: (view: 'home' | 'cart' | 'checkout') => void;
 }
 
 interface ElectronicMusicGenres {
