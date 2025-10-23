@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, User, ShoppingCart, ChevronDown } from 'lucide-react';
+import { Search, User, ShoppingCart, ChevronDown, Trash2 } from 'lucide-react';
 import '../styles/Header.css';
 import { useShoppingCart } from '../context/ShoppingCartContext';
 
@@ -28,21 +28,27 @@ const electronicGenres: ElectronicMusicGenres = {
 export default function Header({
   searchQuery,
   onSearchChange,
-  currentView,
   onViewChange
 }: HeaderProps) {
   const [isGenresOpen, setIsGenresOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isUserButtonActive, setIsUserButtonActive] = useState(false);
+  const [isCartButtonActive, setIsCartButtonActive] = useState(false);
   const [activeTab, setActiveTab] = useState<'login' | 'register' | 'passw'>('login');
-  const { cartItemCount } = useShoppingCart();
+
+  const { cart, removeFromCart, cartItemCount, cartTotalPrice } = useShoppingCart();
 
   return (
     <header className="header">
       <div className="header-container">
         <div className="header-content">
+
+          {/* LOGO */}
           <div className="logo-section">
             <h1 className="logo" onClick={() => onViewChange('home')}>Beat's</h1>
 
+            {/* NAVEGACIÓN */}
             <nav className="navigation">
               <div className="nav-item">
                 <button 
@@ -71,7 +77,9 @@ export default function Header({
             </nav>
           </div>
 
+          {/* ACCIONES */}
           <div className="header-actions">
+            {/* SEARCH */}
             <div className="search-container">
               <input
                 type="text"
@@ -83,10 +91,16 @@ export default function Header({
               <Search className="search-icon" />
             </div>
 
+            {/* USER */}
             <div className="user-menu-container">
-              <button 
-                className="action-button" 
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              <button
+                className={`action-button ${isUserButtonActive ? 'active' : ''}`}
+                onClick={() => {
+                  setIsUserMenuOpen(!isUserMenuOpen);
+                  setIsUserButtonActive(!isUserButtonActive);
+                  if (isCartButtonActive) setIsCartButtonActive(false);
+                  if (isCartOpen) setIsCartOpen(false);
+                }}
               >
                 <User className="action-icon" />
               </button>
@@ -141,13 +155,59 @@ export default function Header({
               )}
             </div>
 
-            <button
-              className={`action-button ${currentView === 'cart' ? 'active' : ''}`}
-              onClick={() => onViewChange('cart')}
-            >
-              <ShoppingCart className="action-icon" />
-              {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
-            </button>
+            {/* CART */}
+            <div className="cart-menu-container" style={{ position: 'relative' }}>
+              <button
+                className={`action-button ${isCartButtonActive ? 'active' : ''}`}
+                onClick={() => {
+                  setIsCartOpen(!isCartOpen);
+                  setIsCartButtonActive(!isCartButtonActive);
+                  if (isUserButtonActive) setIsUserButtonActive(false);
+                  if (isUserMenuOpen) setIsUserMenuOpen(false);
+                }}
+              >
+                <ShoppingCart className="action-icon" />
+                {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+              </button>
+
+              {isCartOpen && (
+                <div className="cart-dropdown">
+                  {cart.length === 0 ? (
+                    <p className="empty-cart-message">Tu carrito está vacío. ¡Comenzá a comprar!</p>
+                  ) : (
+                    <>
+                      <div className="cart-items">
+                        {cart.map(item => (
+                          <div key={item.id} className="cart-dropdown-item">
+                            <img src={item.cover} alt={item.title} className="cart-item-cover" />
+                            <div className="cart-item-info">
+                              <span className="cart-item-title">{item.title}</span>
+                              <span className="cart-item-artist">{item.artist}</span>
+                              <span className="cart-item-price">${(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                            <button
+                              className="cart-item-remove"
+                              onClick={() => removeFromCart(item.id)}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="cart-dropdown-total">
+                        <span>Total:</span>
+                        <span>${cartTotalPrice.toFixed(2)}</span>
+                      </div>
+                      <div className="cart-dropdown-actions">
+                        <button onClick={() => { setIsCartOpen(false); setIsCartButtonActive(false); onViewChange('cart'); }}>Ver Carrito</button>
+                        <button onClick={() => { setIsCartOpen(false); setIsCartButtonActive(false); onViewChange('checkout'); }}>Finalizar Compra</button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </div>
