@@ -5,10 +5,11 @@ import TopTen from './components/TopTen';
 import Releases from './components/Releases';
 import ShoppingCart from './views/ShoppingCart';
 import Checkout from "./views/Checkout";
+import Track from "./views/Tracks";
 import './App.css';
 
 function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'cart' | 'checkout'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'cart' | 'checkout' | 'tracks'>('home');
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleBackToHome = () => {
@@ -46,6 +47,11 @@ function App() {
       {currentView === 'checkout' && (
         <Checkout onBackToCart={() => setCurrentView('cart')} />
       )}
+
+      {currentView === 'tracks' && (
+        <Track onBackToHome={handleBackToHome}/>
+      )}
+
     </div>
   );
 }

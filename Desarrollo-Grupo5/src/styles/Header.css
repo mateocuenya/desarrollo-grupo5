@@ -378,6 +378,20 @@ ul {
   font-weight: 500 !important;  
 }
 
+.user-logged-in{
+  color: #000;
+}
+
+.user-options{
+  margin-top: 10px;
+  margin-left: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.log-out{
+  margin-top: 20px;
+}
 
 @media (max-width: 575px) {
   .user-menu {

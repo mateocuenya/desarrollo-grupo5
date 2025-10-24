@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Search, User, ShoppingCart, ChevronDown, Trash2 } from 'lucide-react';
+import { Search, User, ShoppingCart, ChevronDown, Trash2, SquareUserRound, Package, Handbag, FileMusic, LibraryBig } from 'lucide-react';
 import '../styles/Header.css';
 import { useShoppingCart } from '../context/ShoppingCartContext';
 
 interface HeaderProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
-  currentView: 'home' | 'cart' | 'checkout';
-  onViewChange: (view: 'home' | 'cart' | 'checkout') => void;
+  currentView: 'home' | 'cart' | 'checkout' | 'tracks';
+  onViewChange: (view: 'home' | 'cart' | 'checkout' | 'perfil' | 'coleccion'| 'compras' | 'ventas' | 'tracks') => void;
 }
 
 interface ElectronicMusicGenres {
@@ -37,7 +37,15 @@ export default function Header({
   const [isCartButtonActive, setIsCartButtonActive] = useState(false);
   const [activeTab, setActiveTab] = useState<'login' | 'register' | 'passw'>('login');
 
+  // Estado para el usuario logueado
+  const [currentUser, setCurrentUser] = useState<{ name: string } | null>(null);
+
   const { cart, removeFromCart, cartItemCount, cartTotalPrice } = useShoppingCart();
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setIsUserMenuOpen(false);
+  };
 
   return (
     <header className="header">
@@ -107,49 +115,81 @@ export default function Header({
 
               {isUserMenuOpen && (
                 <div className="user-menu">
-                  <div className="user-menu-tabs">
-                    <button 
-                      className={`user-tab ${activeTab === 'login' ? 'active' : ''}`} 
-                      onClick={() => setActiveTab('login')}
-                    >
-                      Iniciar Sesión
-                    </button>
-                    <button 
-                      className={`user-tab ${activeTab === 'register' ? 'active' : ''}`} 
-                      onClick={() => setActiveTab('register')}
-                    >
-                      Registrarse
-                    </button>
-                  </div>
+                  {currentUser ? (
+                    <div className="user-logged-in">
+                      <p className="user-name">Hola, {currentUser.name}</p>
+                      <ul className="user-options">
+                        <li onClick={() => { onViewChange('perfil'); setIsUserMenuOpen(false); }}> <SquareUserRound /> Perfil</li>
+                        <li onClick={() => { onViewChange('coleccion'); setIsUserMenuOpen(false); }}><LibraryBig />Colecciones</li>
+                        <li onClick={() => { onViewChange('compras'); setIsUserMenuOpen(false); }}> <Handbag /> Mis Compras</li>
+                        <li onClick={() => { onViewChange('ventas'); setIsUserMenuOpen(false); }}> <Package /> Mis Ventas</li>
+                        <li onClick={() => { onViewChange('tracks'); setIsUserMenuOpen(false); }}> <FileMusic /> Tracks</li>
+                        <li onClick={handleLogout} className='log-out'>Cerrar Sesión</li>
+                      </ul>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="user-menu-tabs">
+                        <button 
+                          className={`user-tab ${activeTab === 'login' ? 'active' : ''}`} 
+                          onClick={() => setActiveTab('login')}
+                        >
+                          Iniciar Sesión
+                        </button>
+                        <button 
+                          className={`user-tab ${activeTab === 'register' ? 'active' : ''}`} 
+                          onClick={() => setActiveTab('register')}
+                        >
+                          Registrarse
+                        </button>
+                      </div>
 
-                  {activeTab === 'login' && (
-                    <form className="user-form">
-                      <input type="email" placeholder="Email *" required />
-                      <input type="password" placeholder="Contraseña *" required />
-                      <button type="submit" className="form-btn">Ingresar</button>
-                      <button
-                        type="button"
-                        className="forgot-link"
-                        onClick={() => setActiveTab('passw')}
-                      >
-                        ¿Olvidaste tu contraseña?
-                      </button>
-                    </form>
-                  )}
+                      {activeTab === 'login' && (
+                        <form 
+                          className="user-form" 
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            // Simula login exitoso
+                            setCurrentUser({ name: "Juan Pérez" });
+                            setIsUserMenuOpen(false);
+                          }}
+                        >
+                          <input type="email" placeholder="Email *" required />
+                          <input type="password" placeholder="Contraseña *" required />
+                          <button type="submit" className="form-btn">Ingresar</button>
+                          <button
+                            type="button"
+                            className="forgot-link"
+                            onClick={() => setActiveTab('passw')}
+                          >
+                            ¿Olvidaste tu contraseña?
+                          </button>
+                        </form>
+                      )}
 
-                  {activeTab === 'register' && (
-                    <form className="user-form">
-                      <input type="text" placeholder="Nombre completo" required />
-                      <input type="email" placeholder="Email *" required />
-                      <input type="password" placeholder="Contraseña *" required />
-                      <button type="submit" className="form-btn">Registrarse</button>
-                    </form>
-                  )}
+                      {activeTab === 'register' && (
+                        <form 
+                          className="user-form" 
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            // Simula registro exitoso
+                            setCurrentUser({ name: "Nuevo Usuario" });
+                            setIsUserMenuOpen(false);
+                          }}
+                        >
+                          <input type="text" placeholder="Nombre completo" required />
+                          <input type="email" placeholder="Email *" required />
+                          <input type="password" placeholder="Contraseña *" required />
+                          <button type="submit" className="form-btn">Registrarse</button>
+                        </form>
+                      )}
 
-                  {activeTab === 'passw' && (
-                    <p className='forgot-message'>
-                      Se envió un mail para cambiar tu contraseña al siguiente correo ******@gmail.com
-                    </p>
+                      {activeTab === 'passw' && (
+                        <p className='forgot-message'>
+                          Se envió un mail para cambiar tu contraseña al siguiente correo ******@gmail.com
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
               )}
