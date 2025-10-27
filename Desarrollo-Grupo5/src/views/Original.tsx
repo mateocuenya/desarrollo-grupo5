@@ -5,17 +5,16 @@ import '../styles/Checkout.css';
 
 interface CheckoutProps {
   onBackToCart: () => void;
-  onBackToHome: () => void;
 }
 
-const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
-  const { cart, removeFromCart, clearCart } = useShoppingCart();
+const Checkout: React.FC<CheckoutProps> = ({ onBackToCart }) => {
+  const { cart, removeFromCart } = useShoppingCart();
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const tax = subtotal * 0.123;
   const total = subtotal + tax;
 
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     cardNumber: '',
     cvv: '',
     dni: '',
@@ -35,56 +34,9 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
     city: ''
   });
 
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupMessage, setPopupMessage] = useState('');
-  const [popupSuccess, setPopupSuccess] = useState(false);
-
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
-
-  const handlePayment = () => {
-    const digitsOnly = formData.cardNumber.replace(/\D/g, '');
-
-    if (digitsOnly.length === 0) {
-      setPopupMessage('Ingrese un número de tarjeta para simular la transacción.');
-      setPopupSuccess(false);
-      setShowPopup(true);
-      return;
-    }
-
-    const lastDigit = digitsOnly[digitsOnly.length - 1];
-
-    if (lastDigit === '0') {
-      setPopupMessage('✅ ¡Pago realizado con éxito! Gracias por tu compra.');
-      setPopupSuccess(true);
-      setShowPopup(true);
-
-      // Vaciar el carrito y redirigir luego de unos segundos
-      setTimeout(() => {
-        clearCart();
-        onBackToHome();
-      }, 2000);
-
-      return;
-    }
-
-    if (lastDigit === '1') {
-      setPopupMessage('❌ Pago rechazado. La transacción fue denegada por el emisor.');
-      setPopupSuccess(false);
-      setShowPopup(true);
-      return;
-    }
-
-    setPopupMessage(
-      'Para la simulación: usa una tarjeta que termine en 0 (éxito) o en 1 (rechazo).\n' +
-      `El número ingresado termina en "${lastDigit}".`
-    );
-    setPopupSuccess(false);
-    setShowPopup(true);
-  };
-
-  const closePopup = () => setShowPopup(false);
 
   return (
     <div className="checkout-container">
@@ -96,7 +48,6 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
       </div>
 
       <div className="checkout-content">
-        {/* --- FORMULARIO --- */}
         <div className="checkout-form">
           <div className="form-section">
             <div className="form-row">
@@ -107,7 +58,6 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   value={formData.cardNumber}
                   onChange={(e) => handleInputChange('cardNumber', e.target.value)}
                   className="form-input"
-                  placeholder="ej. 4242 4242 4242 4240"
                 />
               </div>
             </div>
@@ -194,7 +144,6 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
             </div>
           </div>
 
-          {/* --- FACTURACIÓN --- */}
           <div className="form-section">
             <h3 className="section-title">Información de facturación</h3>
             
@@ -295,7 +244,6 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
           </div>
         </div>
 
-        {/* --- RESUMEN --- */}
         <div className="order-summary">
           <h3 className="summary-title">TU PEDIDO</h3>
 
@@ -342,21 +290,9 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
             </div>
           </div>
 
-          <button className="pay-button" onClick={handlePayment}>
-            Pagar
-          </button>
+          <button className="pay-button">Pagar</button>
         </div>
       </div>
-
-      {/* --- POPUP --- */}
-      {showPopup && (
-        <div className="popup-overlay">
-          <div className={`popup-box ${popupSuccess ? 'success' : 'error'}`}>
-            <p style={{ whiteSpace: 'pre-wrap' }}>{popupMessage}</p>
-            <button className="popup-btn" onClick={onBackToHome}>Cerrar</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

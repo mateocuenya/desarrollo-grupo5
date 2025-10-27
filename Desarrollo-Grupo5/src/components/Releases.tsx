@@ -4,6 +4,7 @@ import '../styles/Releases.css';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { useShoppingCart } from '../context/ShoppingCartContext';
+import { useTracks } from '../context/TracksContext';
 
 interface Album {
   id: number;
@@ -50,15 +51,19 @@ const featuredAlbums: Album[] = [
 ];
 
 export default function Releases() {
+  const { albums } = useTracks();
   const [hoveredAlbum, setHoveredAlbum] = useState<number | null>(null);
   const [playingAlbumId, setPlayingAlbumId] = useState<number | null>(null);
   const { addToCart } = useShoppingCart();
 
+  const allAlbums = [...featuredAlbums, ...albums];
+
   const currentAudioSrc = useMemo(() => {
     if (!playingAlbumId) return '';
-    const album = featuredAlbums.find(a => a.id === playingAlbumId);
+    const album = allAlbums.find(a => a.id === playingAlbumId); 
     return album ? album.audio : '';
-  }, [playingAlbumId]);
+  }, [playingAlbumId, allAlbums]);
+
 
   const handleStop = () => setPlayingAlbumId(null);
 
@@ -79,7 +84,7 @@ export default function Releases() {
     <section className="releases-section">
       <h3 className="section-subtitle">Nuevos lanzamientos</h3>
       <div className="albums-grid">
-        {featuredAlbums.map((album) => (
+        {allAlbums.map((album) => (
           <Cards
             key={album.id}
             album={album}
