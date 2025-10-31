@@ -1,0 +1,74 @@
+.tracks-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.tracks-table th,
+.tracks-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.tracks-table th {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6); 
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tracks-table td {
+  font-size: 0.9rem;
+}
+
+.cover-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/*-----Los iconos------*/
+.tracks-table .actions-cell button {
+  background-color: #1a1a1a;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.5em; 
+  font-size: 1em;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  
+
+  color: rgba(255, 255, 255, 0.87);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tracks-table .actions-cell button:hover {
+  border-color: #01FF95;
+}
+
+/*---------Color diferente para el eliminar-------*/
+.tracks-table .actions-cell button.remove-button {
+  background-color: #2c1a1a;
+  color: #ff8a8a;
+}
+
+.tracks-table .actions-cell button.remove-button:hover {
+  border-color: #ff4d4d;
+  color: #ff4d4d;
+}
+
+
+

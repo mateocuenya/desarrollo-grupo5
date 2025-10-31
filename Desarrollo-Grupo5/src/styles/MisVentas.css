@@ -1,0 +1,55 @@
+.page-container {
+    /* Contenedor principal de la página */
+    width: 100%;
+    max-width: 1200px; /* O el ancho que prefieras */
+    
+    /* Centra el contenedor y le da espacio arriba/abajo */
+    margin: 40px auto; 
+    padding: 0 20px; /* Espacio en los costados para móviles */
+    
+    /* El color de texto es heredado de tu :root */
+}
+
+.page-title {
+    /* Mismos estilos del'h1' en index.css */
+    font-size: 3.2em;
+    line-height: 1.1;
+    margin-bottom: 30px; /* Espacio entre el título y la tabla */
+}
+
+/* --- Estilos para los botones de acción --- */
+.page-actions {
+    display: flex;
+    justify-content: space-between; /* Uno a la izquierda, uno a la derecha */
+    align-items: center;
+    margin-top: 300px; /* Espacio entre la tabla y los botones */
+    width: 100%;
+    gap: 650px;
+}
+
+/* Estilo base para AMBOS botones */
+.btn-primary,
+.btn-secondary {
+    /* Color verde como fondo */
+    background-color: #01FF95; 
+    
+    /* Texto negro*/
+    color: #000000; 
+
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.8em 1.5em; 
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none; 
+}
+
+/* Hover para AMBOS botones */
+.btn-primary:hover,
+.btn-secondary:hover {
+    filter: brightness(1.2);
+    transform: scale(1.02);
+}

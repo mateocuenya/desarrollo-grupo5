@@ -6,11 +6,17 @@ import Releases from './components/Releases';
 import ShoppingCart from './views/ShoppingCart';
 import Checkout from "./views/Checkout";
 import Track from "./views/Tracks";
+import MisCompras from './views/MisCompras';
+import MisVentas from "./views/MisVentas";
 import { TracksProvider } from './context/TracksContext';
 import './App.css';
+import Perfil from './views/Perfil';
+import Coleccion from './views/Coleccion';
+
+export type ViewType = 'home' | 'cart' | 'checkout' | 'perfil' | 'coleccion'| 'compras'| 'ventas' | 'tracks';
 
 function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'cart' | 'checkout' | 'tracks'>('home');
+  const [currentView, setCurrentView] = useState<ViewType>('home');
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleBackToHome = () => setCurrentView('home');
@@ -53,6 +59,22 @@ function App() {
         {currentView === 'tracks' && (
           <Track onBackToHome={handleBackToHome} 
           />
+        )}
+
+        {currentView === 'perfil' && (
+          <Perfil onBackToHome={handleBackToHome} />
+        )}
+
+        {currentView === 'coleccion' && (
+          <Coleccion onBackToHome={handleBackToHome} />
+        )}
+
+        {currentView === 'compras' && (
+          <MisCompras onBackToHome={handleBackToHome} />
+        )}
+        
+        {currentView === 'ventas' && (
+          <MisVentas onBackToHome={handleBackToHome} />
         )}
       </div>
     </TracksProvider>

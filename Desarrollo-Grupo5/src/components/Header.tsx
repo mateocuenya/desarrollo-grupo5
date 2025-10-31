@@ -3,11 +3,13 @@ import { Search, User, ShoppingCart, ChevronDown, Trash2, SquareUserRound, Packa
 import '../styles/Header.css';
 import { useShoppingCart } from '../context/ShoppingCartContext';
 
+import { type ViewType } from '../App';
+
 interface HeaderProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
-  currentView: 'home' | 'cart' | 'checkout' | 'tracks';
-  onViewChange: (view: 'home' | 'cart' | 'checkout' | 'perfil' | 'coleccion'| 'compras' | 'ventas' | 'tracks') => void;
+  currentView: ViewType; 
+  onViewChange: (view: ViewType) => void; 
 }
 
 interface ElectronicMusicGenres {

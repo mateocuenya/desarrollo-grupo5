@@ -1,0 +1,66 @@
+.page-container {
+  /* Contenedor principal de la página */
+  width: 100%;
+  max-width: 1200px; /* O el ancho que prefieras */
+  /* Centra el contenedor y le da espacio arriba/abajo */
+  margin: 40px auto; 
+  padding: 0 20px; /* Espacio en los costados para móviles */
+}
+
+.page-title {
+  
+  font-size: 3.2em;
+  line-height: 1.1;
+  margin-bottom: 30px; 
+}
+
+/* --- ESTILOS NUEVOS PARA LOS BOTONES --- */
+.page-actions {
+  display: flex;
+  justify-content: space-between; /* <--- Esto los pone en izq. y der. */
+  align-items: center;
+  margin-top: 300px; /* Espacio entre tabla y boton*/
+  gap: 650px;
+}
+
+/* Estilo base para los botones*/
+.page-actions button {
+  border-radius: 8px;
+  border: 1px solid transparent; /* <--- borde transparente por defecto */
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s, color 0.25s; 
+}
+
+/* Botón Primario (Descargar) */
+.page-actions .btn-primary {
+  background-color: #01FF95;
+  color: #000000; /* Texto negro puro */
+  font-weight: bold;
+  border-color: #01FF95; /* Borde verde */
+}
+
+.page-actions .btn-primary:hover {
+  background-color: #00e084; 
+  border-color: #00e084;
+}
+
+/* Botón Secundario (Volver) */
+.page-actions .btn-secondary {
+  background-color: #01FF95; 
+  color: #000000;
+  font-weight: bold; 
+  border-color: #01FF95;
+}
+
+.page-actions .btn-secondary:hover {
+  background-color: #00e084; 
+  color: #000000; 
+  border-color: #00e084; 
+}
+
+
+
