@@ -1,0 +1,105 @@
+/* --- 1. ESTILOS DE LAYOUT  --- */
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.page-title {
+  font-size: 3.2em;
+  line-height: 1.1;
+  margin-bottom: 30px;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* --- 2. ESTILOS DE BOTONES --- */
+.page-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 40px;
+  gap: 10px;
+}
+
+.btn-primary,
+.btn-secondary {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.25s;
+  
+  
+  /* Tu color verde */
+  background-color: #01FF95;
+  color: #000000; /* Texto negro */
+  border-color: #01FF95;
+  text-decoration: none;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  background-color: #00e084;
+  border-color: #00e084;
+}
+
+/* --- 3. ESTILOS ESPECÍFICOS DE EVENTOS --- */
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.event-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.event-card {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #1a1a1a;
+  transition: all 0.25s;
+}
+
+.event-card:hover {
+  border-color: #01FF95; /* Acento verde */
+}
+
+.event-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.event-info {
+  padding: 1.5rem;
+}
+
+.event-date {
+  display: block;
+  font-size: 0.85rem;
+  color: #01FF95; /* Verde */
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.event-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.event-location {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}

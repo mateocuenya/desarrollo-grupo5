@@ -8,12 +8,14 @@ import Checkout from "./views/Checkout";
 import Track from "./views/Tracks";
 import MisCompras from './views/MisCompras';
 import MisVentas from "./views/MisVentas";
+import Eventos from "./views/Eventos";
+import RegistroEvento from './views/RegistrarEvento';
 import { TracksProvider } from './context/TracksContext';
 import './App.css';
 import Perfil from './views/Perfil';
 import Coleccion from './views/Coleccion';
 
-export type ViewType = 'home' | 'cart' | 'checkout' | 'perfil' | 'coleccion'| 'compras'| 'ventas' | 'tracks';
+export type ViewType = 'home' | 'cart' | 'checkout' | 'perfil' | 'coleccion'| 'compras'| 'ventas' | 'tracks' | 'eventos' | 'registroEvento';
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewType>('home');
@@ -53,6 +55,19 @@ function App() {
         {currentView === 'checkout' && (
           <Checkout onBackToCart={() => setCurrentView('cart')} 
           onBackToHome={handleBackToHome} 
+          />
+        )}
+
+        {currentView === 'eventos' && (
+          <Eventos 
+            onBackToHome={handleBackToHome}
+            onViewChange={setCurrentView} 
+          />
+        )}
+
+        {currentView === 'registroEvento' && (
+          <RegistroEvento 
+            onViewChange={setCurrentView}
           />
         )}
 

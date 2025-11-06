@@ -84,6 +84,14 @@ export default function Header({
                   </div>
                 )}
               </div>
+               {/* ITEM: Eventos */}
+              <div className="nav-item">
+                <div className="nav-item">
+                  <button onClick={() => onViewChange('eventos')} className="nav-button"> {/* <-- ¡CORREGIDO! */}
+                    <span>Eventos</span>
+                  </button>
+                </div>
+              </div>
             </nav>
           </div>
 

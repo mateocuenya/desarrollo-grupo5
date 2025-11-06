@@ -1,0 +1,7 @@
+/* Contenedor para los botones del formulario */
+.form-buttons {
+  display: flex;
+  justify-content: flex-end; /* Alinea los botones a la derecha */
+  gap: 15px; /* Espacio entre botones */
+  margin-top: 20px;
+}
