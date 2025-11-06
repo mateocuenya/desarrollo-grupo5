@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useShoppingCart } from '../context/ShoppingCartContext';
 import '../styles/Checkout.css';
+import { validateTrackForm, type ValidationError } from '../utils/validationPago.ts'; 
 
 interface CheckoutProps {
   onBackToCart: () => void;
@@ -35,6 +36,18 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
     city: ''
   });
 
+  const [errors, setErrors] = useState<ValidationError>({
+    tarjeta: null,
+    cvv: null,
+    dni: null,
+    nombre: null,
+    apellido: null,
+    calle: null,
+    numero: null,
+    cp: null,
+    ciudad: null
+  });
+
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
   const [popupSuccess, setPopupSuccess] = useState(false);
@@ -44,6 +57,40 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
   };
 
   const handlePayment = () => {
+    const validationResults: ValidationError = validateTrackForm({
+      tarjeta: formData.cardNumber,
+      cvv: formData.cvv,
+      dni: formData.dni,
+      nombre: formData.firstName,
+      apellido: formData.lastName,
+      calle: formData.street,
+      numero: formData.number,
+      cp: formData.postalCode,
+      ciudad: formData.city,
+    });
+
+    const hasErrors = Object.values(validationResults).some(error => error !== null);
+    if (hasErrors) {
+      setErrors(validationResults); 
+      setPopupMessage('Por favor, corrige los errores antes de continuar.');
+      setPopupSuccess(false);
+      setShowPopup(true);
+      return;
+    }
+
+    setErrors({
+      tarjeta: null,
+      cvv: null,
+      dni: null,
+      nombre: null,
+      apellido: null,
+      calle: null,
+      numero: null,
+      cp: null,
+      ciudad: null
+    });
+
+    // --- Simulación de pago ---
     const digitsOnly = formData.cardNumber.replace(/\D/g, '');
 
     if (digitsOnly.length === 0) {
@@ -59,13 +106,10 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
       setPopupMessage('✅ ¡Pago realizado con éxito! Gracias por tu compra.');
       setPopupSuccess(true);
       setShowPopup(true);
-
-      // Vaciar el carrito y redirigir luego de unos segundos
       setTimeout(() => {
         clearCart();
         onBackToHome();
       }, 2000);
-
       return;
     }
 
@@ -109,6 +153,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   className="form-input"
                   placeholder="ej. 4242 4242 4242 4240"
                 />
+                {errors.tarjeta && <p className="error-text">{errors.tarjeta}</p>}
               </div>
             </div>
 
@@ -121,6 +166,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('cvv', e.target.value)}
                   className="form-input"
                 />
+                {errors.cvv && <p className="error-text">{errors.cvv}</p>}
               </div>
               <div className="form-group">
                 <label>DNI</label>
@@ -130,6 +176,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('dni', e.target.value)}
                   className="form-input"
                 />
+                {errors.dni && <p className="error-text">{errors.dni}</p>}
               </div>
             </div>
 
@@ -141,6 +188,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('month', e.target.value)}
                   className="form-select"
                 >
+                  <option value="">Seleccionar</option>
                   <option>Enero</option><option>Febrero</option><option>Marzo</option>
                   <option>Abril</option><option>Mayo</option><option>Junio</option>
                   <option>Julio</option><option>Agosto</option><option>Septiembre</option>
@@ -155,8 +203,10 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('year', e.target.value)}
                   className="form-select"
                 >
-                  <option>2024</option><option>2025</option><option>2026</option>
-                  <option>2027</option><option>2028</option><option>2029</option>
+                  <option value="">Seleccionar</option>
+                  <option>2025</option><option>2026</option><option>2027</option>
+                  <option>2028</option><option>2029</option><option>2030</option>
+                  <option>2031</option><option>2032</option><option>2033</option>
                 </select>
               </div>
 
@@ -167,6 +217,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('cardType', e.target.value)}
                   className="form-select"
                 >
+                  <option value="">Seleccionar</option>
                   <option>Visa</option><option>Mastercard</option><option>American Express</option>
                 </select>
               </div>
@@ -181,6 +232,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('firstName', e.target.value)}
                   className="form-input"
                 />
+                {errors.nombre && <p className="error-text">{errors.nombre}</p>}
               </div>
               <div className="form-group">
                 <label>Apellido</label>
@@ -190,6 +242,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('lastName', e.target.value)}
                   className="form-input"
                 />
+                {errors.apellido && <p className="error-text">{errors.apellido}</p>}
               </div>
             </div>
           </div>
@@ -236,6 +289,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('country', e.target.value)}
                   className="form-select"
                 >
+                  <option value="">Seleccionar</option>
                   <option>Argentina</option><option>Brasil</option><option>Chile</option>
                   <option>Uruguay</option><option>Paraguay</option>
                 </select>
@@ -248,6 +302,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('province', e.target.value)}
                   className="form-select"
                 >
+                  <option value="">Seleccionar</option>
                   <option>Buenos Aires</option><option>Córdoba</option>
                   <option>Santa Fe</option><option>Mendoza</option><option>Tucumán</option>
                 </select>
@@ -263,6 +318,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('street', e.target.value)}
                   className="form-input"
                 />
+                {errors.calle && <p className="error-text">{errors.calle}</p>}
               </div>
               <div className="form-group">
                 <label>Número</label>
@@ -272,6 +328,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('number', e.target.value)}
                   className="form-input"
                 />
+                {errors.numero && <p className="error-text">{errors.numero}</p>}
               </div>
               <div className="form-group">
                 <label>CP</label>
@@ -281,6 +338,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('postalCode', e.target.value)}
                   className="form-input"
                 />
+                {errors.cp && <p className="error-text">{errors.cp}</p>}
               </div>
               <div className="form-group">
                 <label>Ciudad</label>
@@ -290,6 +348,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
                   onChange={(e) => handleInputChange('city', e.target.value)}
                   className="form-input"
                 />
+                {errors.ciudad && <p className="error-text">{errors.ciudad}</p>}
               </div>
             </div>
           </div>
@@ -353,7 +412,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBackToCart, onBackToHome }) => {
         <div className="popup-overlay">
           <div className={`popup-box ${popupSuccess ? 'success' : 'error'}`}>
             <p style={{ whiteSpace: 'pre-wrap' }}>{popupMessage}</p>
-            <button className="popup-btn" onClick={onBackToHome}>Cerrar</button>
+            <button className="popup-btn" onClick={closePopup}>Cerrar</button>
           </div>
         </div>
       )}
