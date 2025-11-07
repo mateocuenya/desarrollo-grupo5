@@ -1,0 +1,72 @@
+.djset-header .music-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.djset-container {
+  min-height: 100vh;
+  background: #141414;
+  padding: 32px 16px;
+}
+
+.djset-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.djset-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.djset-header .title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.djset-header h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: white;
+}
+
+.djset-header p {
+  color: #9ca3af;
+  font-size: 18px;
+  margin: 0;
+}
+
+.djset-footer {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  margin-top: 32px;
+}
+
+.djset-container button,
+.djset-container input {
+  outline: none;
+  box-shadow: none;
+}
+
+.djset-container button:focus,
+.djset-container button:focus-visible,
+.djset-container input:focus,
+.djset-container input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.djset-container button::-moz-focus-inner {
+  border: 0;
+}
+
+.djset-container button:active {
+  transform: scale(0.97);
+  filter: brightness(0.9);
+}

@@ -1,0 +1,129 @@
+.theme-manager {
+  background-color: rgba(55, 65, 81, 0.3);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.3);
+}
+
+.theme-manager-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.theme-name-input {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #374151;
+  color: white;
+  border: 2px solid #4b5563;
+  outline: none;
+  max-width: 240px;
+  flex: 1;
+  transition: border-color 0.3s ease;
+}
+
+.theme-name-input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: none;
+}
+
+.theme-manager-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.theme-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  color: white;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.theme-button:hover {
+  transform: scale(1.05);
+}
+
+.theme-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.save-button {
+  background-color: #3b82f6;
+}
+
+.load-button {
+  background-color: #14b8a6;
+}
+
+.export-button,
+.import-button {
+  background-color: #4b5563;
+}
+
+.saved-themes {
+  margin-top: 16px;
+  max-height: 256px;
+  overflow-y: auto;
+  background-color: #374151;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.saved-theme-button {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #4b5563;
+  margin-bottom: 4px;
+  cursor: pointer;
+  color: white;
+  border: none;
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+
+.saved-theme-button:hover {
+  background-color: #6b7280;
+}
+
+.saved-theme-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+/* 🔹 Elimina borde blanco o contorno de botones e inputs al hacer clic */
+.theme-manager button,
+.theme-manager input {
+  outline: none;
+  box-shadow: none;
+}
+
+.theme-manager button:focus,
+.theme-manager input:focus,
+.theme-manager button:focus-visible,
+.theme-manager input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.theme-manager button:active {
+  transform: scale(0.97);
+  filter: brightness(0.9);
+}
+
+.theme-manager button::-moz-focus-inner {
+  border: 0;
+}

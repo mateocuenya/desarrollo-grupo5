@@ -9,13 +9,14 @@ import Track from "./views/Tracks";
 import MisCompras from './views/MisCompras';
 import MisVentas from "./views/MisVentas";
 import Eventos from "./views/Eventos";
+import DjSet from './views/DjSet';
 import RegistroEvento from './views/RegistrarEvento';
 import { TracksProvider } from './context/TracksContext';
 import './App.css';
 import Perfil from './views/Perfil';
 import Coleccion from './views/Coleccion';
 
-export type ViewType = 'home' | 'cart' | 'checkout' | 'perfil' | 'coleccion'| 'compras'| 'ventas' | 'tracks' | 'eventos' | 'registroEvento';
+export type ViewType = 'home' | 'cart' | 'checkout' | 'perfil' | 'coleccion'| 'compras'| 'ventas' | 'tracks' | 'eventos' | 'registroEvento' | 'DjSet';
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewType>('home');
@@ -34,14 +35,16 @@ function App() {
         />
 
         {currentView === 'home' && (
-          <div className="main-container">
+          <div className='hero'>
+              <div className="main-container">
             <div className="content-grid">
               <div className="main-content">
-                <HeroSection />
-                <Releases />
+                <HeroSection onGoToDjSet={() => setCurrentView('DjSet')} />
               </div>
               <TopTen />
             </div>
+          </div>
+          <Releases />
           </div>
         )}
 
@@ -91,6 +94,11 @@ function App() {
         {currentView === 'ventas' && (
           <MisVentas onBackToHome={handleBackToHome} />
         )}
+
+        {currentView === 'DjSet' && (
+          <DjSet/>
+        )}
+        
       </div>
     </TracksProvider>
   );
