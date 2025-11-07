@@ -36,13 +36,15 @@ const Eventos: React.FC<EventosProps> = ({ onBackToHome, onViewChange }) => {
       {/* Encabezado con el botón de registrar */}
       <div className="event-header">
         <h1 className="page-title">Próximos Eventos</h1>
-        <button 
-          className="btn-primary" 
-          onClick={() => onViewChange('registroEvento')} 
-        >
-          Registrar un Evento
-        </button>
       </div>
+          <div className='button-zone'>
+              <button 
+                className="btn-primary header-btn" 
+                  onClick={() => onViewChange('registroEvento')} 
+              >
+                Registrar un Evento
+              </button>
+          </div>
 
       {/* --- Lista de Eventos --- */}
       <div className="event-list">

@@ -9,18 +9,15 @@
 .page-title {
   font-size: 3.2em;
   line-height: 1.1;
-  margin-bottom: 30px;
+  margin: 0; /* ✅ evita el salto feo */
   color: rgba(255, 255, 255, 0.87);
 }
 
 /* --- 2. ESTILOS DE BOTONES --- */
 .page-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  justify-content: flex-start;
   margin-top: 40px;
-  gap: 10px;
 }
 
 .btn-primary,
@@ -33,13 +30,9 @@
   font-family: inherit;
   cursor: pointer;
   transition: all 0.25s;
-  
-  
-  /* Tu color verde */
   background-color: #01FF95;
-  color: #000000; /* Texto negro */
+  color: #000000;
   border-color: #01FF95;
-  text-decoration: none;
 }
 
 .btn-primary:hover,
@@ -53,7 +46,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.title-zone {
+  flex: 1;
+}
+
+.button-zone {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.button-zone button {
+  flex: 0 0 auto;
+  white-space: nowrap; /* ✅ evita expandirse */
 }
 
 .event-list {
@@ -71,7 +80,7 @@
 }
 
 .event-card:hover {
-  border-color: #01FF95; /* Acento verde */
+  border-color: #01FF95;
 }
 
 .event-image {
@@ -87,7 +96,7 @@
 .event-date {
   display: block;
   font-size: 0.85rem;
-  color: #01FF95; /* Verde */
+  color: #01FF95;
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
@@ -102,4 +111,9 @@
 .event-location {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.6);
+}
+
+.header-btn {
+  width: auto !important; /* para evitar que tome 100% */
+  padding: 10px 20px;
 }
