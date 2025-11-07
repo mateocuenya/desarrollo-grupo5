@@ -12,10 +12,6 @@
   outline: none;
 }
 
-.album-card:hover {
-  transform: scale(1.02);
-}
-
 .album-cover-container {
   position: relative;
   border-radius: 8px;
@@ -31,10 +27,6 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
-}
-
-.album-card:hover .album-cover {
-  transform: scale(1.1);
 }
 
 .album-overlay {
