@@ -52,6 +52,10 @@
 
 .title-zone {
   flex: 1;
+  display: flex;
+  align-items: center; /* mantiene el título centrado verticalmente dentro de su zona */
+  flex: 1;
+
 }
 
 .button-zone {
@@ -114,6 +118,11 @@
 }
 
 .header-btn {
-  width: auto !important; /* para evitar que tome 100% */
+  width: auto !important;
   padding: 10px 20px;
+  box-sizing: border-box;
+  align-self: center;
+  white-space: nowrap;
+  position: relative;
+  top: -100px;
 }
