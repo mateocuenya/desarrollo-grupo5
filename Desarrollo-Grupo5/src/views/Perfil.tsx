@@ -1,162 +1,207 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Perfil.css';
+import api from '../services/api';
 
-interface PerfilProps {
-    onBackToHome: () => void;
-}
-
-const Perfil: React.FC<PerfilProps> = ({ onBackToHome }) => {
-  // Estado para la información del usuario
+const Perfil: React.FC<{ onBackToHome: () => void }> = ({ onBackToHome }) => {
     const [userInfo, setUserInfo] = useState({
-        name: 'Juan Pérez',
-        email: 'juan.perez@beats.com',
+        idUsuario: 0,
+        nombreUsuario: '',
+        mailUsuario: '',
+        descripcionUsuario: ''
     });
 
-    // Estado para el formulario de contraseña
     const [passwordForm, setPasswordForm] = useState({
         currentPassword: '',
         newPassword: '',
-        confirmPassword: '',
+        confirmPassword: ''
     });
 
-    // Estado para manejar el mensaje de alerta (éxito/error)
     const [alertMessage, setAlertMessage] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
     const setAlert = (message: string, type: 'success' | 'error') => {
         setAlertMessage({ message, type });
-        setTimeout(() => {
-        setAlertMessage(null);
-        }, 3500); // El mensaje desaparece después de 3.5 segundos
+        setTimeout(() => setAlertMessage(null), 3500);
     };
 
-    /*-------MANEJAR LOS CAMBIOS-------*/
+    // ------------------ Cargar usuario desde localStorage y backend ------------------
+    useEffect(() => {
+        const savedUser = localStorage.getItem("usuario");
+        if (savedUser) {
+            const usuario = JSON.parse(savedUser);
+            setUserInfo({
+                idUsuario: usuario.idUsuario,
+                nombreUsuario: usuario.nombreUsuario || '',
+                mailUsuario: usuario.mailUsuario || '',
+                descripcionUsuario: usuario.descripcionUsuario || ''
+            });
 
-    //Cambio de nombre: ingresar informacion
-    const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserInfo({
-        ...userInfo, //Copia los datos actuales y los pone en el nuevo objeto. Ej cambio nombre, dejo correo.
-        [e.target.name]: e.target.value, //especifica que cambio se debe hacer 
-        });
-    };
+            // Fetch backend para datos actualizados
+            const fetchUsuario = async () => {
+                try {
+                    const res = await api.get(`/usuarios/${usuario.idUsuario}`);
+                    setUserInfo({
+                        idUsuario: res.data.idUsuario,
+                        nombreUsuario: res.data.nombreUsuario || '',
+                        mailUsuario: res.data.mailUsuario || '',
+                        descripcionUsuario: res.data.descripcionUsuario || ''
+                    });
+                    // Actualizamos localStorage con los datos del backend
+                    localStorage.setItem("usuario", JSON.stringify(res.data));
+                } catch (err: any) {
+                    console.error("Error fetchUsuario:", err);
+                    setAlert('Error al cargar los datos del usuario', 'error');
+                }
+            };
 
-    //Cambio de contraseña: ingresar informacion
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPasswordForm({
-            ...passwordForm,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const handleSaveInfo = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Guardando información:", userInfo);
-        // Simulación de API exitosa
-        setAlert("Información guardada con éxito.", 'success');
-    };
-
-    //"Gestion del cambio de contraseña"
-    const handleChangePassword = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-        setAlert("Las nuevas contraseñas no coinciden.", 'error');
-        return;
+            fetchUsuario();
         }
-        console.log("Cambiando contraseña:", passwordForm.newPassword);
-        // Simulación de API exitosa
-        setAlert("Contraseña actualizada con éxito.", 'success');
-        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    }, []);
+
+    // ------------------ Manejo de cambios ------------------
+    const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+    };
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
+    };
+
+    // ------------------ Guardar información ------------------
+    const handleSaveInfo = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!userInfo.idUsuario) {
+            setAlert('Usuario no definido', 'error');
+            return;
+        }
+
+        try {
+            const res = await api.put(`/usuarios/${userInfo.idUsuario}`, {
+                nombreUsuario: userInfo.nombreUsuario,
+                mailUsuario: userInfo.mailUsuario,
+                descripcionUsuario: userInfo.descripcionUsuario
+            });
+
+            setUserInfo(prev => ({ ...prev, ...res.data }));
+            localStorage.setItem("usuario", JSON.stringify(res.data));
+            setAlert('Información actualizada con éxito', 'success');
+        } catch (err) {
+            console.error(err);
+            setAlert('Error al actualizar la información', 'error');
+        }
+    };
+
+    // ------------------ Cambiar contraseña ------------------
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!userInfo.idUsuario) {
+            setAlert('Usuario no definido', 'error');
+            return;
+        }
+
+        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+            setAlert('Las nuevas contraseñas no coinciden', 'error');
+            return;
+        }
+
+        try {
+            await api.put(`/usuarios/${userInfo.idUsuario}`, { contrasenaUsuario: passwordForm.newPassword });
+            setAlert('Contraseña actualizada con éxito', 'success');
+            setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (err) {
+            console.error(err);
+            setAlert('Error al actualizar la contraseña', 'error');
+        }
     };
 
     return (
         <div className="page-container">
             <h1 className="page-title">Mi Perfil</h1>
 
-            {/* --- BLOQUE DE ALERTA --- */}
-            {alertMessage && (
-                <div className={`alert ${alertMessage.type}`}>
-                    {alertMessage.message}
-                </div>
-            )}
+            {alertMessage && <div className={`alert ${alertMessage.type}`}>{alertMessage.message}</div>}
 
             <div className="profile-grid">
-                {/* --- SECCIÓN DE INFORMACIÓN PERSONAL --- */}
+                {/* Información personal */}
                 <div className="profile-card">
                     <h2>Información Personal</h2>
                     <form onSubmit={handleSaveInfo}>
                         <div className="form-group">
-                            <label htmlFor="name">Nombre</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value={userInfo.name}
-                                    onChange={handleInfoChange}
-                                />
+                            <label htmlFor="nombreUsuario">Nombre</label>
+                            <input
+                                type="text"
+                                id="nombreUsuario"
+                                name="nombreUsuario"
+                                value={userInfo.nombreUsuario}
+                                onChange={handleInfoChange}
+                                required
+                            />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={userInfo.email}
-                                    readOnly
-                                />
+                            <label htmlFor="mailUsuario">Email</label>
+                            <input
+                                type="email"
+                                id="mailUsuario"
+                                name="mailUsuario"
+                                value={userInfo.mailUsuario}
+                                onChange={handleInfoChange}
+                                required
+                            />
                         </div>
-                            <button type="submit" className="btn-primary">
-                                Guardar Cambios
-                            </button>
+                        <div className="form-group">
+                            <label htmlFor="descripcionUsuario">Descripción</label>
+                            <textarea
+                                id="descripcionUsuario"
+                                name="descripcionUsuario"
+                                value={userInfo.descripcionUsuario}
+                                onChange={handleInfoChange}
+                            />
+                        </div>
+                        <button type="submit" className="btn-primary">Guardar Cambios</button>
                     </form>
                 </div>
 
-                {/* --- SECCIÓN DE CAMBIO DE CONTRASEÑA --- */}
+                {/* Cambio de contraseña */}
                 <div className="profile-card">
                     <h2>Cambiar Contraseña</h2>
                     <form onSubmit={handleChangePassword}>
                         <div className="form-group">
                             <label htmlFor="currentPassword">Contraseña Actual</label>
-                                <input
-                                    type="password"
-                                    id="currentPassword"
-                                    name="currentPassword"
-                                    value={passwordForm.currentPassword}
-                                    onChange={handlePasswordChange}
-                                    required
-                                />
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                name="currentPassword"
+                                value={passwordForm.currentPassword}
+                                onChange={handlePasswordChange}
+                            />
                         </div>
                         <div className="form-group">
                             <label htmlFor="newPassword">Nueva Contraseña</label>
-                                <input
-                                    type="password"
-                                    id="newPassword"
-                                    name="newPassword"
-                                    value={passwordForm.newPassword}
-                                    onChange={handlePasswordChange}
-                                    required
-                                />
+                            <input
+                                type="password"
+                                id="newPassword"
+                                name="newPassword"
+                                value={passwordForm.newPassword}
+                                onChange={handlePasswordChange}
+                                required
+                            />
                         </div>
                         <div className="form-group">
                             <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-                                <input
-                                    type="password"
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    value={passwordForm.confirmPassword}
-                                    onChange={handlePasswordChange}
-                                    required
-                                />
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={passwordForm.confirmPassword}
+                                onChange={handlePasswordChange}
+                                required
+                            />
                         </div>
-                            <button type="submit" className="btn-secondary">
-                                Actualizar Contraseña
-                            </button>
+                        <button type="submit" className="btn-secondary">Actualizar Contraseña</button>
                     </form>
                 </div>
             </div>
 
-            {/* Botón de volver a casa */}
             <div className="page-actions-center">
-                <button onClick={onBackToHome} className="btn-primary">
-                    Volver a la Página Principal
-                </button>
+                <button onClick={onBackToHome} className="btn-primary">Volver a la Página Principal</button>
             </div>
         </div>
     );

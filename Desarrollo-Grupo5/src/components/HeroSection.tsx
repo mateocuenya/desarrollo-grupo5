@@ -95,7 +95,14 @@ export default function HeroSection({ onGoToDjSet }: HeroSectionProps) {
       </div>
       <div className="beat-section">
         <div className="button-beat">
-          <img src={beat} alt="beat wave" className="beat-gif" />
+          <video 
+          src={beat} 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="beat-gif"
+        />
         </div>
 
         <div className="beat-legend">

@@ -48,9 +48,9 @@ export const validateTrackForm = (data: TrackFormData): ValidationErrors => {
       : null,
 
     discography: !data.discography.trim()
-      ? 'La discográfica es obligatoria'
-      : !/^.{2,50}$/.test(data.discography)
-      ? 'Discográfica inválida: entre 2 y 50 caracteres'
+      ? 'Debe seleccionar una discográfica'
+      : isNaN(Number(data.discography))
+      ? 'Discográfica inválida'
       : null,
 
     format: !data.format.trim()

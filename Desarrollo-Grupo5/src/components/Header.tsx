@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, User, ShoppingCart, ChevronDown, Trash2, SquareUserRound, Package, Handbag, FileMusic, LibraryBig } from 'lucide-react';
 import '../styles/Header.css';
 import { useShoppingCart } from '../context/ShoppingCartContext';
-
+import api from '../services/api';
 import { type ViewType } from '../App';
 
 interface HeaderProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
-  currentView: ViewType; 
-  onViewChange: (view: ViewType) => void; 
+  currentView: ViewType;
+  onViewChange: (view: ViewType) => void;
 }
 
 interface ElectronicMusicGenres {
@@ -32,6 +32,7 @@ export default function Header({
   onSearchChange,
   onViewChange
 }: HeaderProps) {
+  // Estados UI
   const [isGenresOpen, setIsGenresOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -39,14 +40,85 @@ export default function Header({
   const [isCartButtonActive, setIsCartButtonActive] = useState(false);
   const [activeTab, setActiveTab] = useState<'login' | 'register' | 'passw'>('login');
 
-  // Estado para el usuario logueado
+  // Estado usuario logueado
   const [currentUser, setCurrentUser] = useState<{ name: string } | null>(null);
+
+  // Campos controlados login
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+
+  // Campos controlados registro
+  const [registerName, setRegisterName] = useState('');
+  const [registerEmail, setRegisterEmail] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
 
   const { cart, removeFromCart, cartItemCount, cartTotalPrice } = useShoppingCart();
 
+  useEffect(() => {
+    const saved = localStorage.getItem("usuario");
+    if (saved) {
+      const usuario = JSON.parse(saved);
+      setCurrentUser({ name: usuario.nombreUsuario }); 
+    }
+  }, []);
+
   const handleLogout = () => {
     setCurrentUser(null);
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("token");
     setIsUserMenuOpen(false);
+    onViewChange('home');
+  };
+
+  // --- LOGIN ---
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://127.0.0.1:5000/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mailUsuario: loginEmail,
+          contrasenaUsuario: loginPassword
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || 'Error al iniciar sesión');
+        return;
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('usuario', JSON.stringify(data.usuario));
+      setCurrentUser({ name: data.usuario.nombreUsuario });
+      setIsUserMenuOpen(false);
+
+      console.log('✅ Login exitoso:', data);
+    } catch (error) {
+      console.error('Error de red:', error);
+      alert('No se pudo conectar con el servidor');
+    }
+  };
+
+  // --- REGISTRO ---
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await api.post("/usuarios", {
+        nombreUsuario: registerName,
+        mailUsuario: registerEmail,
+        contrasenaUsuario: registerPassword
+      });
+
+      setCurrentUser({ name: res.data.nombreUsuario });
+      localStorage.setItem("usuario", JSON.stringify(res.data));
+      setIsUserMenuOpen(false);
+      console.log("✅ Usuario registrado:", res.data);
+    } catch (err: any) {
+      alert(err.response?.data?.error || "Error al registrarse");
+    }
   };
 
   return (
@@ -61,8 +133,8 @@ export default function Header({
             {/* NAVEGACIÓN */}
             <nav className="navigation">
               <div className="nav-item">
-                <button 
-                  onClick={() => setIsGenresOpen(!isGenresOpen)} 
+                <button
+                  onClick={() => setIsGenresOpen(!isGenresOpen)}
                   className="nav-button"
                 >
                   <span>Géneros</span>
@@ -84,31 +156,18 @@ export default function Header({
                   </div>
                 )}
               </div>
-               {/* ITEM: Eventos */}
+
+              {/* EVENTOS */}
               <div className="nav-item">
-                <div className="nav-item">
-                  <button onClick={() => onViewChange('eventos')} className="nav-button"> {/* <-- ¡CORREGIDO! */}
-                    <span>Eventos</span>
-                  </button>
-                </div>
+                <button onClick={() => onViewChange('eventos')} className="nav-button">
+                  <span>Eventos</span>
+                </button>
               </div>
             </nav>
           </div>
 
           {/* ACCIONES */}
           <div className="header-actions">
-            {/* SEARCH */}
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Buscar tracks, artistas, etc"
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="search-input"
-              />
-              <Search className="search-icon" />
-            </div>
-
             {/* USER */}
             <div className="user-menu-container">
               <button
@@ -130,7 +189,7 @@ export default function Header({
                       <p className="user-name">Hola, {currentUser.name}</p>
                       <ul className="user-options">
                         <li onClick={() => { onViewChange('perfil'); setIsUserMenuOpen(false); }}> <SquareUserRound /> Perfil</li>
-                        <li onClick={() => { onViewChange('coleccion'); setIsUserMenuOpen(false); }}><LibraryBig />Colecciones</li>
+                        <li onClick={() => { onViewChange('coleccion'); setIsUserMenuOpen(false); }}> <LibraryBig /> Colecciones</li>
                         <li onClick={() => { onViewChange('compras'); setIsUserMenuOpen(false); }}> <Handbag /> Mis Compras</li>
                         <li onClick={() => { onViewChange('ventas'); setIsUserMenuOpen(false); }}> <Package /> Mis Ventas</li>
                         <li onClick={() => { onViewChange('tracks'); setIsUserMenuOpen(false); }}> <FileMusic /> Tracks</li>
@@ -140,32 +199,37 @@ export default function Header({
                   ) : (
                     <>
                       <div className="user-menu-tabs">
-                        <button 
-                          className={`user-tab ${activeTab === 'login' ? 'active' : ''}`} 
+                        <button
+                          className={`user-tab ${activeTab === 'login' ? 'active' : ''}`}
                           onClick={() => setActiveTab('login')}
                         >
                           Iniciar Sesión
                         </button>
-                        <button 
-                          className={`user-tab ${activeTab === 'register' ? 'active' : ''}`} 
+                        <button
+                          className={`user-tab ${activeTab === 'register' ? 'active' : ''}`}
                           onClick={() => setActiveTab('register')}
                         >
                           Registrarse
                         </button>
                       </div>
 
+                      {/* LOGIN */}
                       {activeTab === 'login' && (
-                        <form 
-                          className="user-form" 
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            // Simula login exitoso
-                            setCurrentUser({ name: "Juan Pérez" });
-                            setIsUserMenuOpen(false);
-                          }}
-                        >
-                          <input type="email" placeholder="Email *" required />
-                          <input type="password" placeholder="Contraseña *" required />
+                        <form className="user-form" onSubmit={handleLogin}>
+                          <input
+                            type="email"
+                            placeholder="Email *"
+                            value={loginEmail}
+                            onChange={(e) => setLoginEmail(e.target.value)}
+                            required
+                          />
+                          <input
+                            type="password"
+                            placeholder="Contraseña *"
+                            value={loginPassword}
+                            onChange={(e) => setLoginPassword(e.target.value)}
+                            required
+                          />
                           <button type="submit" className="form-btn">Ingresar</button>
                           <button
                             type="button"
@@ -177,23 +241,35 @@ export default function Header({
                         </form>
                       )}
 
+                      {/* REGISTRO */}
                       {activeTab === 'register' && (
-                        <form 
-                          className="user-form" 
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            // Simula registro exitoso
-                            setCurrentUser({ name: "Nuevo Usuario" });
-                            setIsUserMenuOpen(false);
-                          }}
-                        >
-                          <input type="text" placeholder="Nombre completo" required />
-                          <input type="email" placeholder="Email *" required />
-                          <input type="password" placeholder="Contraseña *" required />
+                        <form className="user-form" onSubmit={handleRegister}>
+                          <input
+                            type="text"
+                            placeholder="Nombre completo"
+                            value={registerName}
+                            onChange={(e) => setRegisterName(e.target.value)}
+                            required
+                          />
+                          <input
+                            type="email"
+                            placeholder="Email *"
+                            value={registerEmail}
+                            onChange={(e) => setRegisterEmail(e.target.value)}
+                            required
+                          />
+                          <input
+                            type="password"
+                            placeholder="Contraseña *"
+                            value={registerPassword}
+                            onChange={(e) => setRegisterPassword(e.target.value)}
+                            required
+                          />
                           <button type="submit" className="form-btn">Registrarse</button>
                         </form>
                       )}
 
+                      {/* OLVIDÉ CONTRASEÑA */}
                       {activeTab === 'passw' && (
                         <p className='forgot-message'>
                           Se envió un mail para cambiar tu contraseña al siguiente correo ******@gmail.com
@@ -257,7 +333,6 @@ export default function Header({
                 </div>
               )}
             </div>
-
           </div>
         </div>
       </div>
