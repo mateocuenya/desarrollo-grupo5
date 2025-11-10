@@ -3,72 +3,125 @@ import TracksTable, { type UserTrack } from '../components/TrackTable';
 import EmptyState from "../components/EmptyState";
 import '../styles/MisCompras.css';
 
-// --- Datos de prueba para que funcione ---
-// --- Luego conectar con la API
-const mockData: UserTrack[] = [ 
-    { 
-        id: '1', 
-        title: 'Sweet Nothing', 
-        artist: 'Calvin Harris', 
-        recordLabel: 'Disorder', 
-        genre: 'House', 
-        format: 'MP3', 
-        price: 2.50, 
-        date: '07/02/2023', 
-        cover: 'https://i.scdn.co/image/ab67616d0000b273b4091a61b8f59d57a43588f1' 
-    },
-    { 
-        id: '2', 
-        title: 'Early Morning', 
-        artist: 'Guy J', 
-        recordLabel: 'UTN Records', 
-        genre: 'Progressive House', 
-        format: 'MP3', 
-        price: 3.60, 
-        date: '07/02/2023', 
-        cover: 'https://i.scdn.co/image/ab67616d0000b273d4df28e8c1f0b0c03bfb091e' 
-    }
-];
-
-
-
 interface MisComprasProps {
     onBackToHome: () => void;
 }
 
 const MisCompras: React.FC<MisComprasProps> = ({ onBackToHome }) => {
+    // --- Estados para manejar la carga de datos ---
     const [compras, setCompras] = useState<UserTrack[]>([]);
-    useEffect(() => {
-        //Cargar compras reales
-        setCompras(mockData);
-        //setCompras([]); --> Probar sin compras
-    }, []);
+    const [loading, setLoading] = useState(true); // Empieza en 'cargando'
+    const [error, setError] = useState<string | null>(null); // Estado para errores
 
+    // --- Carga de datos desde el Backend ---
+    useEffect(() => {
+        // Función para cargar las compras
+        const fetchCompras = async () => {
+            try {
+                setLoading(true); // Inicia la carga
+                setError(null);   // Limpia errores 
+                
+                // --- Reemplaza esta URL por la de la API ---
+                const apiUrl = 'http://localhost:5000/api/mis-compras/1'; // (Ej: /api/mis-compras/id-del-usuario)
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Si la API necesita un token de autenticación, agrégar aquí:
+                        // 'Authorization': 'Bearer ' + tuTokenDeUsuario
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: No se pudo conectar al servidor`);
+                }
+
+                const dataFromBackend = await response.json();
+
+                // --- MAPEO DE DATOS ---
+                const comprasAdaptadas: UserTrack[] = dataFromBackend.map((compra: any) => ({
+                    id: compra.idTrack, // Asumiendo que idTrack es el id principal
+                    title: compra.title, // el backend debe enviar estos datos (usando JOIN)
+                    artist: compra.artist,
+                    recordLabel: compra.recordLabel,
+                    genre: compra.genre,
+                    format: compra.format,
+                    cover: compra.cover,
+                    bpm: compra.bpm,
+                    releaseDate: compra.releaseDate,
+                    
+                    // --- Campos mapeados ---
+                    price: compra.montoCompra, // 'price' (frontend) usa 'montoCompra' (backend)
+                    date: new Date(compra.fechaCompra).toLocaleDateString(), // 'date' (frontend) usa 'fechaCompra' (backend)
+                }));
+
+                setCompras(comprasAdaptadas);
+
+            } catch (err: any) {
+                console.error("Error al cargar las compras:", err);
+                setError("No se pudieron cargar tus compras. Por favor, intenta de nuevo más tarde.");
+            } finally {
+                setLoading(false); // Termina la carga de datos (éxito o error)
+            }
+        };
+
+        fetchCompras();
+    }, []); // El array vacío [] asegura que esto se ejecute solo una vez
+
+    // --- Lógica de botones ---
     const handleDownloadReport = () => {
         console.log("Descargando informe...");
         // Aquí iría la lógica para generar el informe
     };
 
-    return (
-        <div className="page-container">
-            <h1 className="page-title">Mis Compras</h1>
-            {compras.length === 0 ? (
-            <EmptyState 
-            message="No tienes compras para visualizar"
-            onBackToHome={onBackToHome} // <-- Se la pasamos al EmptyState
-                />
-            ) : (
-                <>
-                <TracksTable items={compras} variant="compras" />
+    // 1. Estado de Carga
+    if (loading) {
+        return (
+            <div className="page-container">
+                <h1 className="page-title">Cargando...</h1>
+            </div>
+        );
+    }
 
+    // 2. Estado de Error
+    if (error) {
+        return (
+            <div className="page-container">
+                <h1 className="page-title" style={{ color: '#ff8a8a' }}>Error al cargar</h1>
+                <p style={{ color: 'rgba(255, 255, 255, 0.87)' }}>{error}</p>
                 <div className="page-actions">
                     <button className="btn-secondary" onClick={onBackToHome}>
                         Volver a la Página principal
                     </button>
-                    <button className="btn-primary" onClick={handleDownloadReport}>
-                        Descargar informe
-                    </button>
+                    <div></div> {/* Espaciador */}
                 </div>
+            </div>
+        );
+    }
+
+    // 3. Estado Correcto (con o sin compras)
+    return (
+        <div className="page-container">
+            <h1 className="page-title">Mis Compras</h1>
+            {compras.length === 0 ? (
+                // A. Sin compras
+                <EmptyState 
+                    message="No tienes compras para visualizar"
+                    onBackToHome={onBackToHome}
+                />
+            ) : (
+                // B. Con compras
+                <>
+                    <TracksTable items={compras} variant="compras" />
+                    <div className="page-actions">
+                        <button className="btn-secondary" onClick={onBackToHome}>
+                            Volver a la Página principal
+                        </button>
+                        <button className="btn-primary" onClick={handleDownloadReport}>
+                            Descargar informe
+                        </button>
+                    </div>
                 </>
             )}
         </div>
@@ -76,4 +129,3 @@ const MisCompras: React.FC<MisComprasProps> = ({ onBackToHome }) => {
 };
 
 export default MisCompras;
-

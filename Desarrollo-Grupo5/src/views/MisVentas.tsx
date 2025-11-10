@@ -8,22 +8,94 @@ interface MisVentasProps {
     onBackToHome: () => void;
 }
 
-// --- Datos de prueba ---
-const mockDataVentas: UserTrack[] = [
-    { id: '1', title: 'Sweet Nothing', artist: 'Juan Perez', recordLabel: 'Disorder', genre: 'House', bpm: 128, releaseDate: '07/02/2003', format: 'MP3', price: 2.50, date: '07/02/2023', cover: 'https://i.scdn.co/image/ab67616d0000b273b4091a61b8f59d57a43588f1' },
-    { id: '2', title: 'Early Morning', artist: 'Juan Perez', recordLabel: 'UTN Records', genre: 'Progressive House', bpm: 125, releaseDate: '07/02/1990', format: 'MP3', price: 3.60, date: '07/02/2023', cover: 'https://i.scdn.co/image/ab67616d0000b273d4df28e8c1f0b0c03bfb091e' }
-];
-
 const MisVentas: React.FC<MisVentasProps> = ({ onBackToHome }) => {
+    // --- Estados para manejar la carga de datos ---
     const [ventas, setVentas] = useState<UserTrack[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
+    // --- Carga de datos desde el Backend ---
     useEffect(() => {
-        // Para probar la tabla llena, descomenta esta línea:
-        setVentas(mockDataVentas); 
-        // Para probar el estado vacío, deja esta línea:
-        // setVentas([]); 
-    }, []);
+        const fetchVentas = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                
+                // --- ¡IMPORTANTE! Reemplaza esta URL por la de tu API ---
+                const apiUrl = 'http://localhost:5000/api/mis-ventas/1'; 
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': 'Bearer 'TuToken'
+                    }
+                });
 
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: No se pudo conectar al servidor`);
+                }
+
+                const dataFromBackend = await response.json();
+
+                // --- MAPEO DE DATOS ---
+                // Tu API (backend) debe devolver los datos del Track (con JOIN)
+                const ventasAdaptadas: UserTrack[] = dataFromBackend.map((venta: any) => ({
+                    id: venta.idTrack,
+                    title: venta.title,
+                    artist: venta.artist,
+                    recordLabel: venta.recordLabel,
+                    genre: venta.genre,
+                    format: venta.format,
+                    cover: venta.cover,
+                    bpm: venta.bpm,
+                    releaseDate: new Date(venta.releaseDate).toLocaleDateString(), // Fecha de lanzamiento (del track)
+                    price: venta.price, // Precio del track
+                    
+                    // --- Campos mapeados ---
+                    // 'date' (frontend) usa 'fechaVenta' (backend)
+                    date: new Date(venta.fechaVenta).toLocaleDateString(), 
+                }));
+
+                setVentas(ventasAdaptadas);
+
+            } catch (err: any) {
+                console.error("Error al cargar las ventas:", err);
+                setError("No se pudieron cargar tus ventas. Por favor, intenta de nuevo más tarde.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchVentas();
+    }, []); // El array vacío [] asegura que esto se ejecute solo una vez
+
+    // 1. Estado de Carga
+    if (loading) {
+        return (
+            <div className="page-container">
+                <h1 className="page-title">Cargando...</h1>
+            </div>
+        );
+    }
+
+    // 2. Estado de Error
+    if (error) {
+        return (
+            <div className="page-container">
+                <h1 className="page-title" style={{ color: '#ff8a8a' }}>Error al cargar</h1>
+                <p style={{ color: 'rgba(255, 255, 255, 0.87)' }}>{error}</p>
+                <div className="page-actions">
+                    <button className="btn-secondary" onClick={onBackToHome}>
+                        Volver a la Página principal
+                    </button>
+                    <div></div>
+                </div>
+            </div>
+        );
+    }
+
+    // 3. Estado Correcto
     return (
         <div className="page-container">
             <h1 className="page-title">Mis Ventas</h1>
@@ -37,14 +109,14 @@ const MisVentas: React.FC<MisVentasProps> = ({ onBackToHome }) => {
                 <>
                     <TracksTable items={ventas} variant="ventas" />
 
-                <div className="page-actions">
+                    <div className="page-actions">
                         <button className="btn-secondary" onClick={onBackToHome}>
                             Volver a la Página principal
                         </button>
-                    <button className="btn-primary">
-                        Descargar informe
-                    </button>
-                </div>
+                        <button className="btn-primary">
+                            Descargar informe
+                        </button>
+                    </div>
                 </>
             )}
         </div>
@@ -52,4 +124,3 @@ const MisVentas: React.FC<MisVentasProps> = ({ onBackToHome }) => {
 };
 
 export default MisVentas;
-
