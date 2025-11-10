@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { type ViewType } from '../App';
 import '../styles/MisCompras.css'; 
 import '../styles/Perfil.css'; 
-import '../styles/RegistrarEvento.css' 
+import '../styles/RegistrarEvento.css';
 
-// Definimos las props
+
 interface RegistroEventoProps {
   onViewChange: (view: ViewType) => void;
 }
@@ -13,12 +13,13 @@ const RegistroEvento: React.FC<RegistroEventoProps> = ({ onViewChange }) => {
   const [formState, setFormState] = useState({
     title: '',
     date: '',
-    location: '',
+    horario: '',
+    ubicacion: '', // <-- Dejar vacío para el placeholder
     imageUrl: '',
     description: ''
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormState({
       ...formState,
       [e.target.name]: e.target.value,
@@ -46,27 +47,47 @@ const RegistroEvento: React.FC<RegistroEventoProps> = ({ onViewChange }) => {
           
           <div className="form-group">
             <label htmlFor="title">Nombre del Evento</label>
-            <input type="text" id="title" name="title" onChange={handleChange} required />
+            <input type="text" id="title" name="title" value={formState.title} onChange={handleChange} required />
           </div>
 
           <div className="form-group">
             <label htmlFor="date">Fecha (ej. 30 DIC 2025)</label>
-            <input type="text" id="date" name="date" onChange={handleChange} required />
+            <input type="text" id="date" name="date" value={formState.date} onChange={handleChange} required />
           </div>
           
           <div className="form-group">
-            <label htmlFor="location">Ubicación (ej. CABA, Argentina)</label>
-            <input type="text" id="location" name="location" onChange={handleChange} required />
+            <label htmlFor="horario">Hora (ej. 12:00hs)</label>
+            <input type="text" id="horario" name="horario" value={formState.horario} onChange={handleChange} required />
+          </div>
+
+          {/* --- Reemplazamos el Input por un Select --- */}
+          <div className="form-group">
+            <label htmlFor="ubicacion">Ubicación</label>
+            <select 
+              id="ubicacion" 
+              name="ubicacion" 
+              value={formState.ubicacion} /* Controlamos el valor */
+              onChange={handleChange} 
+              required
+            >
+              {/* Placeholder deshabilitado */}
+              <option value="" disabled>Selecciona una ubicación</option>
+              
+              {/* Opciones (el 'value' es lo que envías al backend) */}
+              <option value="1">CABA, Argentina</option>  
+              <option value="2">Rosario, Argentina</option>
+              <option value="3">Córdoba, Argentina</option>
+            </select>
           </div>
 
           <div className="form-group">
             <label htmlFor="imageUrl">URL de la Imagen (Flyer)</label>
-            <input type="url" id="imageUrl" name="imageUrl" onChange={handleChange} />
+            <input type="url" id="imageUrl" name="imageUrl" value={formState.imageUrl} onChange={handleChange} />
           </div>
           
           <div className="form-group">
             <label htmlFor="description">Descripción (Opcional)</label>
-            <textarea id="description" name="description" rows={4} onChange={handleChange}></textarea>
+            <textarea id="description" name="description" value={formState.description} rows={4} onChange={handleChange}></textarea>
           </div>
 
           {/* Botones de acción */}
@@ -89,3 +110,4 @@ const RegistroEvento: React.FC<RegistroEventoProps> = ({ onViewChange }) => {
 };
 
 export default RegistroEvento;
+
