@@ -61,7 +61,6 @@
 }
 
 .form-group input:focus {
-
   outline: none;
   border-color: #01FF95;
   box-shadow: 0 0 0 3px rgba(1, 255, 149, 0.2);
@@ -70,6 +69,18 @@
 .form-group input[readOnly] {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.form-group select { /* <-- AÑADE ESTO */
+  width: 100%;
+  padding: 0.8em 1em;
+  font-size: 1em;
+  font-family: inherit;
+  background-color: #242424; /* Fondo principal */
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.87);
+  transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 /* --- Botones --- */
