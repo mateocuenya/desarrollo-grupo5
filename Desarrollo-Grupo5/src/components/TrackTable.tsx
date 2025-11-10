@@ -1,40 +1,41 @@
 import React from 'react';
 import '../styles/TrackTable.css'; 
 
-
-
 export interface UserTrack {
-        id: string;
-    title: string;
-    artist: string;
-    recordLabel: string;
-    genre: string;
-    format: string;
-    price: number;
-    date: string; // "ADQUIRIDO" o "VENDIDO"
-    cover: string; // URL de la imagen
-    bpm?: number | string; // Opcional
-    releaseDate?: string; // Opcional
+  id: string;
+  title: string;
+  artist: string;
+  recordLabel: string;
+  genre: string;
+  format: string;
+  price: number;
+  date: string;     // "ADQUIRIDO" o "VENDIDO"
+  cover: string;    // URL de la imagen
+  bpm?: number | string;
+  releaseDate?: string;
 }
 
-// --- Tipos de la Tabla ---
 type TableVariant = 'compras' | 'ventas';
 
 interface TracksTableProps {
-    items: UserTrack[];
-    variant: TableVariant;
+  items: UserTrack[];
+  variant: TableVariant;
+
+  // 👇 nuevos callbacks
+  onPlay?: (id: string) => void;
+  onPause?: (id: string) => void;
+  onDownload?: (id: string) => void;
+  onRemove?: (id: string) => void;
 }
 
-// --- Componente Principal de la Tabla ---
-const TracksTable: React.FC<TracksTableProps> = ({ items, variant }) => {
-
-  const handleDownload = (id: string) => {
-    console.log("Descargar (no implementado):", id);
-  };
-  const handleRemove = (id: string) => {
-    console.log("Borrar (no implementado):", id);
-  };
-
+const TracksTable: React.FC<TracksTableProps> = ({
+  items,
+  variant,
+  onPlay,
+  onPause,
+  onDownload,
+  onRemove
+}) => {
   return (
     <table className="tracks-table">
       <thead>
@@ -44,7 +45,6 @@ const TracksTable: React.FC<TracksTableProps> = ({ items, variant }) => {
           <th>ARTISTA/S</th>
           <th>DISCOGRÁFICA</th>
           <th>GÉNERO</th>
-          {/* --- COLUMNAS DINÁMICAS --- */}
           {variant === 'ventas' && (
             <>
               <th>BPM</th>
@@ -67,8 +67,7 @@ const TracksTable: React.FC<TracksTableProps> = ({ items, variant }) => {
             <td>{item.artist}</td>
             <td>{item.recordLabel}</td>
             <td>{item.genre}</td>
-            
-            {/* --- CELDAS DINÁMICAS --- */}
+
             {variant === 'ventas' && (
               <>
                 <td>{item.bpm || 'N/A'}</td>
@@ -79,17 +78,19 @@ const TracksTable: React.FC<TracksTableProps> = ({ items, variant }) => {
             <td>{item.format}</td>
             <td>${item.price.toFixed(2)}</td>
             <td>{item.date}</td>
-            
+
             <td className="actions-cell">
-              <button title="Play">▶️</button>
-              <button title="Pausa">⏸️</button>
+              <button title="Play" onClick={() => onPlay?.(item.id)}>▶</button>
+              <button title="Pausa" onClick={() => onPause?.(item.id)}>⏸</button>
               {variant === 'compras' && (
-                <button onClick={() => handleDownload(item.id)} title="Descargar">
-                  💾
-                </button>
+                <button title="Descargar" onClick={() => onDownload?.(item.id)}>💾</button>
               )}
-              <button onClick={() => handleRemove(item.id)} title="Borrar" className="remove-button">
-                🗑️
+              <button
+                title="Borrar"
+                className="remove-button"
+                onClick={() => onRemove?.(item.id)}
+              >
+                🗑
               </button>
             </td>
           </tr>
