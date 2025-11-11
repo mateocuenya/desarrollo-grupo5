@@ -62,5 +62,11 @@
   border-color: #00e084; 
 }
 
-
+/* Imagen de portada de los tracks */
+.track-cover-m {
+  width: 50px;       /* Ancho pequeño */
+  height: 50px;      /* Alto fijo */
+  object-fit: cover; /* Ajusta la imagen recortando si es necesario */
+  border-radius: 4px; /* Bordes redondeados */
+}
 

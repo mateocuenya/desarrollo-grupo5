@@ -146,16 +146,15 @@ const Perfil: React.FC<{ onBackToHome: () => void }> = ({ onBackToHome }) => {
                                 required
                             />
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="descripcionUsuario">Descripción</label>
+                        <label htmlFor="mailUsuario">Descripcion</label>
                             <textarea
-                                id="descripcionUsuario"
-                                name="descripcionUsuario"
-                                value={userInfo.descripcionUsuario}
-                                onChange={handleInfoChange}
+                            id="descripcionUsuario"
+                            name="descripcionUsuario"
+                            value={userInfo.descripcionUsuario}
+                            onChange={handleInfoChange}
+                            className="form-input descripcion-textarea"
                             />
-                        </div>
-                        <button type="submit" className="btn-primary">Guardar Cambios</button>
+                            <button type="submit" className="btn-primary">Guardar Cambios</button>
                     </form>
                 </div>
 

@@ -1,207 +1,77 @@
-import React, { useEffect, useState } from "react";
-import EmptyState from "../components/EmptyState";
-import TracksTable, { type UserTrack } from "../components/TrackTable";
+import React, { useState, useEffect } from "react";
 import "../styles/MisVentas.css";
-import api from "../services/api";
+
+interface UserTrack {
+  id: string;
+  title: string;
+  artist: string;
+  recordLabel: string;
+  genre: string;
+  format: string;
+  price: number;
+  date: string;
+  cover: string;
+}
 
 interface MisVentasProps {
   onBackToHome: () => void;
 }
 
-const AUTH_ME_ENDPOINT = "/auth/me"; // <-- ajustá si tu backend usa otra ruta
-
-// helpers
-const fallbackCover =
-  "https://i.scdn.co/image/ab67616d0000b273b4091a61b8f59d57a43588f1";
-
-const toDataUrlIfNeeded = (val: unknown): string | undefined => {
-  if (!val) return undefined;
-  if (typeof val === "string") {
-    if (val.startsWith("http") || val.startsWith("data:")) return val;
-    if (/^[A-Za-z0-9+/=]+$/.test(val)) return `data:image/jpeg;base64,${val}`;
-    return val;
-  }
-  return undefined;
-};
-
-const fmtDate = (d?: string): string => {
-  if (!d) return "";
-  const x = new Date(d);
-  return isNaN(x.getTime()) ? d : new Intl.DateTimeFormat("es-AR").format(x);
-};
-
-type VentaAPI = any;
-
-function mapVentaToUserTrack(c: VentaAPI): UserTrack {
-  const t =
-    c.track ??
-    c.Track ?? {
-      idTrack: c.idTrack,
-      nombreTrack: c.nombreTrack,
-      artista: c.artista,
-      discografica: c.nombreDiscografica,
-      genero: c.nombreGenero,
-      formato: c.formato,
-      portadaURL: c.portadaURL,
-      imagenTrack: c.imagenTrack,
-      precio: c.precioTrack,
-      precioTrack: c.precioTrack,
-      fechaLanzamiento: c.fechaLanzamiento,
-      bpm: c.bpm,
-    };
-
-  const id = String(c.idVenta ?? c.id ?? t.idTrack ?? t.id ?? Math.random());
-  const title =
-    t.nombreTrack ?? t.titulo ?? c.nombreTrack ?? c.titulo ?? "Sin título";
-  const artist =
-    t.usuario?.nombreUsuario ?? t.nombreUsuario ?? t.artista ?? "Desconocido";
-  const recordLabel =
-    t.discografica?.nombreDiscografica ??
-    t.discografica ??
-    c.nombreDiscografica ??
-    "—";
-  const genre =
-    t.genero?.nombreGenero ?? t.genero ?? c.nombreGenero ?? "—";
-  const format = t.formato ?? t.formatoTrack ?? c.formato ?? "—";
-  const cover =
-    t.portadaURL ??
-    toDataUrlIfNeeded(t.imagenTrack) ??
-    toDataUrlIfNeeded(c.imagenTrack) ??
-    fallbackCover;
-
-  const price = Number(
-    c.precioTotal ??
-      c.montoVenta ??
-      c.monto ??
-      c.precio ??
-      t.precio ??
-      t.precioTrack ??
-      0
-  );
-
-  const date = fmtDate(
-    c.fechaVenta ?? c.fecha ?? c.created_at ?? c.fechaAdquisicion ?? c.fechaOperacion
-  );
-
-  const bpm = Number(t.bpm ?? c.bpm ?? 0) || undefined;
-  const releaseDate = fmtDate(t.fechaLanzamiento ?? c.fechaLanzamiento) || undefined;
-
-  return {
-    id,
-    title,
-    artist,
-    recordLabel,
-    genre,
-    format,
-    price,
-    date,
-    cover,
-    bpm,
-    releaseDate,
-  };
-}
-
-// -------- obtener idUsuario actual con 3 estrategias --------
-async function getCurrentUserId(): Promise<number | null> {
-  // 1) localStorage
-  const fromLS = Number(localStorage.getItem("userId"));
-  if (fromLS) return fromLS;
-
-  // 2) JWT (si guardás 'token' en localStorage)
-  const token = localStorage.getItem("token");
-  if (token) {
-    try {
-      const [, payloadBase64] = token.split(".");
-      const payload = JSON.parse(atob(payloadBase64));
-      // ajustá la clave según tu JWT (id, sub, user_id, etc.)
-      const fromJwt =
-        Number(payload?.id) ||
-        Number(payload?.user_id) ||
-        Number(payload?.sub);
-      if (fromJwt) {
-        localStorage.setItem("userId", String(fromJwt));
-        return fromJwt;
-      }
-    } catch {}
-  }
-
-  // 3) /auth/me (o el endpoint que tengas)
-  try {
-    const resp = await api.get(AUTH_ME_ENDPOINT);
-    const id =
-      Number(resp.data?.idUsuario) ||
-      Number(resp.data?.id) ||
-      Number(resp.data?.user?.idUsuario) ||
-      Number(resp.data?.user?.id);
-    if (id) {
-      localStorage.setItem("userId", String(id));
-      return id;
-    }
-  } catch {
-    // ignoramos; caerá al return null
-  }
-
-  return null;
-}
-
 const MisVentas: React.FC<MisVentasProps> = ({ onBackToHome }) => {
   const [ventas, setVentas] = useState<UserTrack[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    (async () => {
-      try {
-        setError("");
+    setTimeout(() => {
+      const ARTISTA = "DJ Example"; // mismo artista para todas las canciones
 
-        const CURRENT_USER_ID = Number(localStorage.getItem("userId"));
-        if (!CURRENT_USER_ID) {
-        setError("No se encontró el id del usuario. Iniciá sesión.");
-        setVentas([]);
-        return;
-        }
-
-        const { data } = await api.get("/ventas", {
-        params: { idUsuario: CURRENT_USER_ID },
-        });
-
-
-        const arr = Array.isArray(data) ? data : data?.ventas ?? [];
-        const mapped = (arr as VentaAPI[]).map(mapVentaToUserTrack);
-        setVentas(mapped);
-      } catch (e: any) {
-        console.error("Error MisVentas:", e?.response?.data || e?.message || e);
-        const apiMsg =
-          e?.response?.data?.error ||
-          e?.response?.data?.message ||
-          "No se pudieron cargar las ventas";
-        setError(apiMsg);
-        setVentas([]);
-      } finally {
-        setLoading(false);
-      }
-    })();
+      const hardcoded: UserTrack[] = [
+        {
+          id: "1",
+          title: "Starlight",
+          artist: ARTISTA,
+          recordLabel: "Warner Bros",
+          genre: "Rock",
+          format: "MP3",
+          price: 12.5,
+          date: "2024-03-10",
+          cover: "https://images.pexels.com/photos/1648790/pexels-photo-1648790.jpeg?auto=compress&cs=tinysrgb&w=100",
+        },
+        {
+          id: "2",
+          title: "Ocean Drive",
+          artist: ARTISTA,
+          recordLabel: "Blase Boys Club",
+          genre: "House",
+          format: "WAV",
+          price: 9.0,
+          date: "2024-03-12",
+          cover: "https://images.pexels.com/photos/1763074/pexels-photo-1763074.jpeg?auto=compress&cs=tinysrgb&w=100",
+        },
+        {
+          id: "3",
+          title: "Firestone",
+          artist: ARTISTA,
+          recordLabel: "Sony Music",
+          genre: "Tropical House",
+          format: "MP3",
+          price: 11.0,
+          date: "2024-03-15",
+          cover: "https://images.pexels.com/photos/2479313/pexels-photo-2479313.jpeg?auto=compress&cs=tinysrgb&w=100",
+        },
+      ];
+      setVentas(hardcoded);
+      setLoading(false);
+    }, 800);
   }, []);
+
+  const totalRecaudado = ventas.reduce((sum, v) => sum + v.price, 0);
 
   if (loading) {
     return (
       <div className="page-container">
         <h1 className="page-title">Mis Ventas</h1>
-        <p>Cargando…</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="page-container">
-        <h1 className="page-title">Mis Ventas</h1>
-        <p style={{ color: "red" }}>{error}</p>
-        <div className="page-actions">
-          <button className="btn-secondary" onClick={onBackToHome}>
-            Volver a la Página principal
-          </button>
-        </div>
+        <p>Cargando ventas...</p>
       </div>
     );
   }
@@ -211,18 +81,46 @@ const MisVentas: React.FC<MisVentasProps> = ({ onBackToHome }) => {
       <h1 className="page-title">Mis Ventas</h1>
 
       {ventas.length === 0 ? (
-        <EmptyState
-          message="No tienes ventas para visualizar"
-          onBackToHome={onBackToHome}
-        />
+        <p>No tienes ventas disponibles</p>
       ) : (
         <>
-          <TracksTable items={ventas} variant="ventas" />
+          <table className="tracks-table ventas">
+            <thead>
+              <tr>
+                <th>Portada</th>
+                <th>Título</th>
+                <th>Artista</th>
+                <th>Género</th>
+                <th>Formato</th>
+                <th>Precio</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ventas.map((track) => (
+                <tr key={track.id}>
+                  <td>
+                    <img src={track.cover} alt={track.title} className="track-cover-m" />
+                  </td>
+                  <td>{track.title}</td>
+                  <td>{track.artist}</td>
+                  <td>{track.genre}</td>
+                  <td>{track.format}</td>
+                  <td>${track.price.toFixed(2)}</td>
+                  <td>{track.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="total-recaudado">
+            <strong>Total recaudado:</strong> ${totalRecaudado.toFixed(2)}
+          </div>
+
           <div className="page-actions">
             <button className="btn-secondary" onClick={onBackToHome}>
               Volver a la Página principal
             </button>
-            <button className="btn-primary">Descargar informe</button>
           </div>
         </>
       )}

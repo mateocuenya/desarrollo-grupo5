@@ -144,6 +144,47 @@
   border: 1px solid #ff4d4d;
 }
 
+.form-input,
+.descripcion-textarea {
+  background-color: #242424;     
+  color: #fff;                
+  border: 1px solid #333;     
+  border-radius: 8px;
+  padding: 8px 10px;
+  width: 100%;
+  resize: vertical;           
+}
+
+.form-input:focus,
+.descripcion-textarea:focus {
+  outline: none;
+  border-color: #666;         
+  background-color: #1a1a1a;  
+}
+
+.btn-danger {
+  background-color: #b22222;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  margin-top: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover {
+  background-color: #ff4040;
+}
+
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+
 @media (max-width: 768px) {
   .profile-grid {
     grid-template-columns: 1fr; 

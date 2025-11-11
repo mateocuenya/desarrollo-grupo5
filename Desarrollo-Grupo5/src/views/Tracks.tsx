@@ -14,23 +14,21 @@ interface Discografica {
   nombreDiscografica: string;
 }
 
-
 const Tracks: React.FC<TracksProps> = ({ onBackToHome }) => {
   const [discograficas, setDiscograficas] = useState<Discografica[]>([]);
   const { addAlbum } = useTracks();
 
   useEffect(() => {
-  const fetchDiscograficas = async () => {
-    try {
-      const response = await api.get("/discograficas");
-      setDiscograficas(response.data);
-    } catch (error) {
-      console.error("Error al cargar discográficas:", error);
-    }
-  };
-
-  fetchDiscograficas();
-}, []);
+    const fetchDiscograficas = async () => {
+      try {
+        const response = await api.get("/discograficas");
+        setDiscograficas(response.data);
+      } catch (error) {
+        console.error("Error al cargar discográficas:", error);
+      }
+    };
+    fetchDiscograficas();
+  }, []);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -50,7 +48,7 @@ const Tracks: React.FC<TracksProps> = ({ onBackToHome }) => {
   const [errors, setErrors] = useState<ValidationErrors | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
 
-  // --- Cargar usuario logueado ---
+  // --- Obtener usuario actual ---
   useEffect(() => {
     const storedUser = localStorage.getItem("usuario");
     if (storedUser) {
@@ -63,7 +61,6 @@ const Tracks: React.FC<TracksProps> = ({ onBackToHome }) => {
     }
   }, []);
 
-  // --- Mapeo de géneros a ID ---
   const genreMap: Record<string, number> = {
     "Progressive House": 1,
     "Deep House": 2,
@@ -86,16 +83,6 @@ const Tracks: React.FC<TracksProps> = ({ onBackToHome }) => {
     handleInputChange("duration", formatted);
   };
 
-  const handleReleaseDateChange = (value: string) => {
-    const digits = value.replace(/\D/g, "").slice(0, 8);
-    let formatted = "";
-    if (digits.length <= 4) formatted = digits;
-    else if (digits.length <= 6) formatted = digits.slice(0, 4) + "-" + digits.slice(4);
-    else formatted =
-      digits.slice(0, 4) + "-" + digits.slice(4, 6) + "-" + digits.slice(6);
-    handleInputChange("releaseDate", formatted);
-  };
-
   const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) setAudioFile(file);
@@ -106,86 +93,82 @@ const Tracks: React.FC<TracksProps> = ({ onBackToHome }) => {
     if (file) setCoverImage(file);
   };
 
-  // --- Envío de formulario ---
-// --- Envío de formulario ---
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  // --- Envío del formulario ---
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!audioFile) {
-    alert("El audio es obligatorio 🎵");
-    return;
-  }
+    if (!audioFile) {
+      alert("El audio es obligatorio 🎵");
+      return;
+    }
 
-  if (!userId) {
-    alert("Debes iniciar sesión antes de subir un track 🔒");
-    return;
-  }
+    if (!userId) {
+      alert("Debes iniciar sesión antes de subir un track 🔒");
+      return;
+    }
 
-  const validationErrors = validateTrackForm(formData);
-  const hasErrors = Object.values(validationErrors).some((err) => err !== null);
+    const validationErrors = validateTrackForm(formData);
+    const hasErrors = Object.values(validationErrors).some((err) => err !== null);
 
-  if (hasErrors) {
-    setErrors(validationErrors);
-    return;
-  }
+    if (hasErrors) {
+      setErrors(validationErrors);
+      return;
+    }
 
-  setErrors(null);
+    setErrors(null);
 
-try {
-  const formDataToSend = new FormData();
-  formDataToSend.append("nombreTrack", formData.title);
-  formDataToSend.append("bpm", formData.bpm);
-  formDataToSend.append("duracion", formData.duration);
-  formDataToSend.append("formatoTrack", formData.format);
-  formDataToSend.append("fechaLanzamiento", formData.releaseDate);
-  formDataToSend.append("precioTrack", formData.price);
-  formDataToSend.append("idGenero", String(genreMap[formData.genre] || 1));
-  formDataToSend.append("idDiscografica", formData.discography);
-  formDataToSend.append("idUsuario", String(userId));
-  formDataToSend.append("audio", audioFile!);
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("nombreTrack", formData.title);
+      formDataToSend.append("bpm", formData.bpm);
+      formDataToSend.append("duracion", formData.duration);
+      formDataToSend.append("formatoTrack", formData.format);
+      formDataToSend.append("fechaLanzamiento", formData.releaseDate);
+      formDataToSend.append("precioTrack", formData.price);
+      formDataToSend.append("idGenero", String(genreMap[formData.genre] || 1));
+      formDataToSend.append("idDiscografica", formData.discography);
+      formDataToSend.append("idUsuario", String(userId));
+      formDataToSend.append("audio", audioFile!);
 
-  // Enviar la imagen directamente (no como base64)
-  if (coverImage) {
-    formDataToSend.append("imagen", coverImage);
-  }
-  enviarTrack(formDataToSend);
+      if (coverImage) {
+        formDataToSend.append("imagen", coverImage);
+      }
 
-} catch (error: any) {
-  console.error("❌ Error al subir track:", error);
-  alert("Error al subir el track. Revisá la consola para más detalles.");
-}
+      enviarTrack(formDataToSend);
+    } catch (error: any) {
+      console.error("❌ Error al subir track:", error);
+      alert("Error al subir el track. Revisá la consola para más detalles.");
+    }
+  };
 
-};
+  const enviarTrack = async (formDataToSend: FormData) => {
+    try {
+      const response = await api.post("/tracks", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-// --- Función para enviar el FormData al backend ---
-const enviarTrack = async (formDataToSend: FormData) => {
-  try {
-    const response = await api.post("/tracks", formDataToSend, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+      console.log("✅ Track creado:", response.data);
+      alert("Track subido exitosamente 🎶");
 
-    console.log("✅ Track creado:", response.data);
-    alert("Track subido exitosamente 🎶");
+      const newAlbum = {
+        id: response.data.idTrack || Date.now(),
+        title: formData.title,
+        artist: `${formData.artistName} ${formData.artistLastName}`.trim(),
+        cover: coverImage
+          ? URL.createObjectURL(coverImage)
+          : "https://via.placeholder.com/400x400.png?text=Sin+Portada",
+        audio: URL.createObjectURL(audioFile!),
+        price: parseFloat(formData.price) || 0.99,
+        genre: formData.genre,
+      };
 
-    const newAlbum = {
-      id: response.data.idTrack || Date.now(),
-      title: formData.title,
-      artist: `${formData.artistName} ${formData.artistLastName}`.trim(),
-      cover: coverImage
-        ? URL.createObjectURL(coverImage)
-        : "https://via.placeholder.com/400x400.png?text=Sin+Portada",
-      audio: URL.createObjectURL(audioFile!),
-      price: parseFloat(formData.price) || 0.99,
-      genre: formData.genre,
-    };
-
-    addAlbum(newAlbum);
-    onBackToHome();
-  } catch (error: any) {
-    console.error("❌ Error al enviar track:", error);
-    alert("Error al subir el track. Revisá la consola para más detalles.");
-  }
-};
+      addAlbum(newAlbum);
+      onBackToHome();
+    } catch (error: any) {
+      console.error("❌ Error al enviar track:", error);
+      alert("Error al subir el track. Revisá la consola para más detalles.");
+    }
+  };
 
   return (
     <div className="tracks-container">
@@ -213,7 +196,7 @@ const enviarTrack = async (formDataToSend: FormData) => {
 
           {/* --- FORMULARIO --- */}
           <div className="form-grid">
-            {/* fila 1 */}
+            {/* Fila 1 */}
             <div className="form-row">
               <div className="form-group">
                 <label>Título</label>
@@ -252,26 +235,26 @@ const enviarTrack = async (formDataToSend: FormData) => {
               </div>
             </div>
 
-            {/* fila 2 */}
+            {/* Fila 2 */}
             <div className="form-row">
-             <div className="form-group">
-              <label>Discográfica</label>
-              <select
-                value={formData.discography}
-                onChange={(e) => handleInputChange("discography", e.target.value)}
-                className="form-input"
-              >
-                <option value="">Seleccione una discográfica</option>
-                {discograficas.map((d) => (
-                  <option key={d.idDiscografica} value={d.idDiscografica}>
-                    {d.idDiscografica} - {d.nombreDiscografica}
-                  </option>
-                ))}
-              </select>
-              {errors?.discography && (
-                <span className="error-message">{errors.discography}</span>
-              )}
-            </div>
+              <div className="form-group">
+                <label>Discográfica</label>
+                <select
+                  value={formData.discography}
+                  onChange={(e) => handleInputChange("discography", e.target.value)}
+                  className="form-input"
+                >
+                  <option value="">Seleccione una discográfica</option>
+                  {discograficas.map((d) => (
+                    <option key={d.idDiscografica} value={d.idDiscografica}>
+                      {d.idDiscografica} - {d.nombreDiscografica}
+                    </option>
+                  ))}
+                </select>
+                {errors?.discography && (
+                  <span className="error-message">{errors.discography}</span>
+                )}
+              </div>
 
               <div className="form-group">
                 <label>Formato</label>
@@ -285,18 +268,16 @@ const enviarTrack = async (formDataToSend: FormData) => {
                   <option>FLAC</option>
                   <option>AAC</option>
                 </select>
-                {errors?.format && (
-                  <span className="error-message">{errors.format}</span>
-                )}
               </div>
 
+              {/* Calendario nativo con validación de fecha */}
               <div className="form-group">
                 <label>Fecha de lanzamiento</label>
                 <input
-                  type="text"
+                  type="date"
                   value={formData.releaseDate}
-                  onChange={(e) => handleReleaseDateChange(e.target.value)}
-                  placeholder="YYYY-MM-DD"
+                  max={new Date().toISOString().split("T")[0]}
+                  onChange={(e) => handleInputChange("releaseDate", e.target.value)}
                   className="form-input"
                 />
                 {errors?.releaseDate && (
@@ -305,7 +286,7 @@ const enviarTrack = async (formDataToSend: FormData) => {
               </div>
             </div>
 
-            {/* fila 3 */}
+            {/* Fila 3 */}
             <div className="form-row">
               <div className="form-group cover-upload-group">
                 <label>Portada</label>
@@ -344,9 +325,6 @@ const enviarTrack = async (formDataToSend: FormData) => {
                   onChange={(e) => handleInputChange("artistName", e.target.value)}
                   className="form-input"
                 />
-                {errors?.artistName && (
-                  <span className="error-message">{errors.artistName}</span>
-                )}
               </div>
 
               <div className="form-group">
@@ -359,13 +337,10 @@ const enviarTrack = async (formDataToSend: FormData) => {
                   }
                   className="form-input"
                 />
-                {errors?.artistLastName && (
-                  <span className="error-message">{errors.artistLastName}</span>
-                )}
               </div>
             </div>
 
-            {/* fila 4 */}
+            {/* Fila 4 */}
             <div className="form-row">
               <div className="form-group">
                 <label>Precio</label>
@@ -376,7 +351,6 @@ const enviarTrack = async (formDataToSend: FormData) => {
                   placeholder="$0.00"
                   className="form-input"
                 />
-                {errors?.price && <span className="error-message">{errors.price}</span>}
               </div>
 
               <div className="form-group">
@@ -390,17 +364,12 @@ const enviarTrack = async (formDataToSend: FormData) => {
                     <option key={g}>{g}</option>
                   ))}
                 </select>
-                {errors?.genre && <span className="error-message">{errors.genre}</span>}
               </div>
             </div>
           </div>
 
           <div className="form-actions">
-            <button
-              type="button"
-              className="cancel-button"
-              onClick={onBackToHome}
-            >
+            <button type="button" className="cancel-button" onClick={onBackToHome}>
               Cancelar
             </button>
             <button type="submit" className="submit-button">

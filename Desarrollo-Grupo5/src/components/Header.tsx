@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, User, ShoppingCart, ChevronDown, Trash2, SquareUserRound, Package, Handbag, FileMusic, LibraryBig } from 'lucide-react';
+import { User, ShoppingCart, ChevronDown, Trash2, SquareUserRound, Package, Handbag, FileMusic, LibraryBig } from 'lucide-react';
 import '../styles/Header.css';
 import { useShoppingCart } from '../context/ShoppingCartContext';
 import api from '../services/api';
@@ -133,42 +133,15 @@ export default function Header({
             {/* NAVEGACIÓN */}
             <nav className="navigation">
               <div className="nav-item">
-                <button
-                  onClick={() => setIsGenresOpen(!isGenresOpen)}
-                  className="nav-button"
-                >
-                  <span>Géneros</span>
-                  <ChevronDown className={`nav-icon ${isGenresOpen ? "rotate" : ""}`} />
-                </button>
-
-                {isGenresOpen && (
-                  <div className="submenu">
-                    {Object.entries(electronicGenres).map(([category, subgenres]) => (
-                      <div key={category} className="submenu-category">
-                        <h4>{category}</h4>
-                        <ul>
-                          {subgenres.map((genre) => (
-                            <li key={genre} className="submenu-item">{genre}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* EVENTOS */}
-              <div className="nav-item">
-                <button onClick={() => onViewChange('eventos')} className="nav-button">
+                <button onClick={() => onViewChange('feed')} className="nav-button">
                   <span>Eventos</span>
                 </button>
               </div>
             </nav>
           </div>
 
-          {/* ACCIONES */}
+
           <div className="header-actions">
-            {/* USER */}
             <div className="user-menu-container">
               <button
                 className={`action-button ${isUserButtonActive ? 'active' : ''}`}
@@ -189,9 +162,9 @@ export default function Header({
                       <p className="user-name">Hola, {currentUser.name}</p>
                       <ul className="user-options">
                         <li onClick={() => { onViewChange('perfil'); setIsUserMenuOpen(false); }}> <SquareUserRound /> Perfil</li>
-                        <li onClick={() => { onViewChange('coleccion'); setIsUserMenuOpen(false); }}> <LibraryBig /> Colecciones</li>
                         <li onClick={() => { onViewChange('compras'); setIsUserMenuOpen(false); }}> <Handbag /> Mis Compras</li>
                         <li onClick={() => { onViewChange('ventas'); setIsUserMenuOpen(false); }}> <Package /> Mis Ventas</li>
+                        <li onClick={() => { onViewChange('mistracks'); setIsUserMenuOpen(false); }}> <LibraryBig /> Mis Tracks</li>
                         <li onClick={() => { onViewChange('tracks'); setIsUserMenuOpen(false); }}> <FileMusic /> Tracks</li>
                         <li onClick={handleLogout} className='log-out'>Cerrar Sesión</li>
                       </ul>

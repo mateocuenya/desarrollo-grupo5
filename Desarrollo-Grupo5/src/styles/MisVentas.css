@@ -53,3 +53,18 @@
     filter: brightness(1.2);
     transform: scale(1.02);
 }
+
+.total-recaudado {
+  flex: 0 0 250px; /* ancho fijo */
+  background-color: #10b981; /* verde suave */
+  border: 1px solid #10b981; /* verde principal */
+  color: aliceblue !important;
+  border-radius: 12px;
+  padding: 20px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #065f46; /* verde oscuro para el texto */
+  text-align: center;
+  height: fit-content;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); /* sombra verde suave */
+}

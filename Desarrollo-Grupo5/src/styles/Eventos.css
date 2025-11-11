@@ -1,128 +1,500 @@
-/* --- 1. ESTILOS DE LAYOUT  --- */
-.page-container {
+/* Events Container */
+.events-container {
+  min-height: 100vh;
+  background-color: hsla(0, 0%, 8%, 1);
+  color: #ffffff;
+  padding: 32px;
+  overflow-x: hidden;
   width: 100%;
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 20px;
+  box-sizing: border-box;
 }
 
-.page-title {
-  font-size: 3.2em;
-  line-height: 1.1;
-  margin: 0; /* ✅ evita el salto feo */
-  color: rgba(255, 255, 255, 0.87);
+.events-header {
+  max-width: 1280px;
+  margin: 0 auto 32px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
 }
 
-/* --- 2. ESTILOS DE BOTONES --- */
-.page-actions {
+.events-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  word-break: break-word;
+}
+
+.events-subtitle {
+  font-size: 18px;
+  color: #9ca3af;
+  margin: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Events Content */
+.events-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.events-form {
+  background-color: rgba(55, 65, 81, 0.3);
+  border-radius: 16px;
+  padding: 32px;
+  backdrop-filter: blur(12px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Media Upload Section */
+.upload-section {
+  margin-bottom: 32px;
   display: flex;
-  justify-content: flex-start;
-  margin-top: 40px;
+  justify-content: center;
 }
 
-.btn-primary,
-.btn-secondary {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
+.media-upload {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+}
+
+.file-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #374151;
+  border: 2px dashed #6b7280;
+  border-radius: 12px;
+  padding: 48px 32px;
   cursor: pointer;
-  transition: all 0.25s;
-  background-color: #01FF95;
-  color: #000000;
-  border-color: #01FF95;
+  transition: all 0.2s ease;
+  color: #d1d5db;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.btn-primary:hover,
-.btn-secondary:hover {
-  background-color: #00e084;
-  border-color: #00e084;
+.upload-label:hover {
+  border-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
 }
 
-/* --- 3. ESTILOS ESPECÍFICOS DE EVENTOS --- */
-.event-header {
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.upload-icons {
+  display: flex;
+  gap: 16px;
+}
+
+.upload-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.upload-text {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.upload-hint {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* Media Preview */
+.media-preview {
+  position: relative;
+  background-color: #374151;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.remove-media {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: #ffffff;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.2s ease;
+}
+
+.remove-media:hover {
+  background-color: rgba(239, 68, 68, 0.8);
+}
+
+.remove-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.preview-image,
+.preview-video {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.media-info {
+  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  width: 100%;
+  background-color: rgba(17, 24, 39, 0.8);
 }
 
-.title-zone {
+.media-name {
+  color: #ffffff;
+  font-weight: 500;
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 16px;
+}
+
+.media-size {
+  color: #9ca3af;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* Form Grid */
+.form-grid {
   display: flex;
-  align-items: center; /* mantiene el título centrado verticalmente dentro de su zona */
-  flex: 1;
-
-}
-
-.button-zone {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.button-zone button {
-  flex: 0 0 auto;
-  white-space: nowrap; /* ✅ evita expandirse */
-}
-
-.event-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  flex-direction: column;
   gap: 24px;
 }
 
-.event-card {
-  background-color: #1a1a1a;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #1a1a1a;
-  transition: all 0.25s;
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.event-card:hover {
-  border-color: #01FF95;
-}
-
-.event-image {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.event-info {
-  padding: 1.5rem;
-}
-
-.event-date {
-  display: block;
-  font-size: 0.85rem;
-  color: #01FF95;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.event-title {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #fff;
-  margin: 0 0 0.5rem 0;
-}
-
-.event-location {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.header-btn {
-  width: auto !important;
-  padding: 10px 20px;
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
   box-sizing: border-box;
-  align-self: center;
+}
+
+.form-group.full-width {
+  flex: 1 1 100%;
+  min-width: 100%;
+}
+
+.form-group label {
+  color: #d1d5db;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+/* Track Selection */
+.track-select {
+  margin-bottom: 16px;
+}
+
+.selected-track {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid #10b981;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.track-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.track-cover {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.track-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.track-title {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
   white-space: nowrap;
-  position: relative;
-  top: -100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-artist {
+  color: #10b981;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-icon {
+  width: 20px;
+  height: 20px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #374151;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.cancel-button {
+  background-color: #6b7280;
+  color: #ffffff;
+}
+
+.cancel-button:hover {
+  background-color: #4b5563;
+}
+
+.submit-button {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.submit-button:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .events-container {
+    padding: 24px 16px;
+  }
+  
+  .events-form {
+    padding: 24px;
+  }
+  
+  .upload-label {
+    padding: 36px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .events-container {
+    padding: 16px 12px;
+  }
+  
+  .events-title {
+    font-size: 32px;
+  }
+  
+  .events-subtitle {
+    font-size: 16px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-group {
+    min-width: 100%;
+  }
+  
+  .upload-label {
+    padding: 32px 20px;
+  }
+  
+  .upload-text {
+    font-size: 16px;
+  }
+  
+  .preview-image,
+  .preview-video {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .events-container {
+    padding: 12px 8px;
+  }
+  
+  .events-title {
+    font-size: 28px;
+  }
+  
+  .events-subtitle {
+    font-size: 14px;
+  }
+  
+  .events-form {
+    padding: 20px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .cancel-button,
+  .submit-button {
+    width: 100%;
+  }
+  
+  .upload-label {
+    padding: 24px 16px;
+  }
+  
+  .upload-text {
+    font-size: 14px;
+  }
+  
+  .upload-hint {
+    font-size: 12px;
+  }
+  
+  .preview-image,
+  .preview-video {
+    height: 200px;
+  }
+  
+  .track-cover {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Form validation states */
+.form-input:invalid,
+.form-select:invalid,
+.form-textarea:invalid {
+  border-color: #ef4444;
+}
+
+.form-input:valid,
+.form-select:valid,
+.form-textarea:valid {
+  border-color: #10b981;
+}
+
+/* File upload states */
+.upload-label.has-file {
+  border-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+/* Animation for smooth transitions */
+@media (prefers-reduced-motion: no-preference) {
+  .form-input,
+  .form-select,
+  .form-textarea,
+  .upload-label,
+  .cancel-button,
+  .submit-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-input,
+  .form-select,
+  .form-textarea,
+  .upload-label,
+  .cancel-button,
+  .submit-button {
+    transition: none;
+  }
 }

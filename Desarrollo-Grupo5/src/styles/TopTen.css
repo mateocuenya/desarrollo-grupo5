@@ -13,7 +13,7 @@
 }
 
 .top-tracks-title {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   margin-bottom: 24px;
 }
@@ -25,12 +25,40 @@
 .tracks-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px; 
+}
+
+.track-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px; 
+}
+
+.track-number {
+  font-weight: 700;
+  min-width: 24px; 
+  text-align: right;
+  font-size: 1.1rem;
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.track-name {
+  font-weight: 600;
+  font-size: 1.5rem; 
+}
+
+.track-artist {
+  font-size: 0.95rem; 
+  color: #ccc;
 }
 
 @media (min-width: 992px) {
   .top-tracks-title {
-    font-size: 20px;
+    font-size: 30px; 
   }
 }
 
@@ -40,7 +68,7 @@
   }
   
   .top-tracks-title {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
 
@@ -65,7 +93,7 @@
   }
 
   .top-tracks-title {
-    font-size: 18px !important;
+    font-size: 20px !important;
     margin-bottom: 10px !important;
   }
 
